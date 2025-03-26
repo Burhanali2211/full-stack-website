@@ -1,36 +1,102 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Educational Platform
+
+A modern, interactive educational platform for learning programming and web development built with Next.js 14, React, TypeScript, and Tailwind CSS.
+
+## Features
+
+- Modern UI with light/dark mode support
+- Responsive design for all devices
+- Interactive tutorials with code editor
+- Project-based learning
+- Blog with educational articles
+- User authentication with Supabase
+- Community features
+
+## Technologies Used
+
+- Next.js 14 (App Router)
+- React 18
+- TypeScript
+- Tailwind CSS
+- Framer Motion for animations
+- Radix UI for accessible components
+- Supabase for authentication and database
+- Zustand for state management
+- React Query for data fetching
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 18+ 
+- npm or yarn
+- PostgreSQL (optional, for local development)
+
+### Installation
+
+1. Clone the repository
+
+```bash
+git clone https://github.com/yourusername/educational-platform.git
+cd educational-platform
+```
+
+2. Install dependencies
+
+```bash
+npm install --legacy-peer-deps
+# or
+yarn install
+```
+
+3. Set up environment variables
+
+Copy the example environment file and modify it according to your setup:
+
+```bash
+cp .env.example .env.local
+```
+
+4. Start the development server
 
 ```bash
 npm run dev
 # or
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `src/app` - App Router pages and layouts
+- `src/components` - Reusable UI components
+- `src/lib` - Utility functions and hooks
+- `src/contexts` - Context providers
+- `public` - Static assets
+- `prisma` - Database schema
+- `styles` - Global styles
 
-## Learn More
+## Contributing
 
-To learn more about Next.js, take a look at the following resources:
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Fork the project
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## License
 
-## Deploy on Vercel
+This project is licensed under the MIT License - see the LICENSE file for details.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Recent Updates
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Added missing Radix UI packages
+- Fixed SVG image formatting issues
+- Improved environment variable handling
+- Enhanced light/dark mode contrast
+- Optimized mobile responsiveness
+- Updated Navbar and Contact components with better styling
+- Added proper animations across components

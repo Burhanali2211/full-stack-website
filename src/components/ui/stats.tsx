@@ -9,25 +9,25 @@ import { cn } from "@/lib/utils";
 const stats = [
   {
     icon: <Users className="h-6 w-6" />,
-    value: "15,000+",
+    value: "12,500+",
     label: "Students",
     description: "Active learners worldwide",
   },
   {
     icon: <BookOpen className="h-6 w-6" />,
-    value: "200+",
+    value: "180+",
     label: "Tutorials",
     description: "In-depth learning materials",
   },
   {
     icon: <Code className="h-6 w-6" />,
-    value: "100+",
+    value: "85+",
     label: "Projects",
     description: "Hands-on coding exercises",
   },
   {
     icon: <Award className="h-6 w-6" />,
-    value: "50+",
+    value: "42+",
     label: "Certifications",
     description: "Industry-recognized awards",
   },
@@ -116,17 +116,17 @@ export function Stats() {
           whileTap={{ scale: 0.98 }}
         >
           <div className="relative">
-            <div className="absolute inset-0 rounded-full bg-primary/10 blur-xl" />
-            <div className="relative z-10 p-3 rounded-full bg-primary/10 text-primary">
+            <div className="absolute inset-0 rounded-full bg-primary/20 blur-xl" />
+            <div className="relative z-10 p-3 rounded-full bg-primary/20 text-primary">
               {stat.icon}
             </div>
           </div>
           <div className="space-y-2">
-            <div className="text-3xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+            <div className="text-3xl font-bold bg-gradient-to-r from-indigo-700 to-indigo-900 dark:from-primary dark:to-primary/60 bg-clip-text text-transparent">
               <Counter value={stat.value} />
             </div>
-            <h3 className="text-lg font-semibold">{stat.label}</h3>
-            <p className="text-sm text-muted-foreground">{stat.description}</p>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{stat.label}</h3>
+            <p className="text-sm text-gray-700 dark:text-gray-400">{stat.description}</p>
           </div>
           <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-primary/10 to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         </motion.div>
