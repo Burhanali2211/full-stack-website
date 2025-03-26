@@ -4,10 +4,6 @@
 echo "Node.js version:"
 node -v
 
-# Clear cache
-echo "Clearing npm cache..."
-npm cache clean --force
-
 # Install dependencies with legacy peer deps
 echo "Installing dependencies..."
 npm install --legacy-peer-deps
