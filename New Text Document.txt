@@ -1,0 +1,17 @@
+$websitePath = "C:\Users\gamin\OneDrive\Documents\MY GEAR\msrp\educational-platform"
+
+$files = Get-ChildItem -Path $websitePath -Recurse -File | 
+    Select-Object Name, 
+                  FullName, 
+                  @{Name="SizeKB";Expression={[math]::Round($_.Length/1KB,2)}}, 
+                  Extension, 
+                  CreationTime, 
+                  LastWriteTime
+
+# Display in console
+$files | Format-Table -AutoSize
+
+# Export to CSV (optional)
+$files | Export-Csv -Path "website_files.csv" -NoTypeInformation
+
+Write-Output "Total files found: $($files.Count)"

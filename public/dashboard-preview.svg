@@ -1,0 +1,48 @@
+<svg width="800" height="600" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="800" height="600" fill="#F8FAFC" rx="16" />
+  
+  <!-- Sidebar -->
+  <rect x="0" y="0" width="200" height="600" fill="#1E293B" rx="16" />
+  
+  <!-- Sidebar Menu Items -->
+  <rect x="20" y="100" width="160" height="12" rx="6" fill="#64748B" opacity="0.8" />
+  <rect x="20" y="140" width="140" height="12" rx="6" fill="#64748B" opacity="0.6" />
+  <rect x="20" y="180" width="120" height="12" rx="6" fill="#64748B" opacity="0.6" />
+  <rect x="20" y="220" width="150" height="12" rx="6" fill="#64748B" opacity="0.6" />
+  
+  <!-- Main Content -->
+  <rect x="240" y="40" width="520" height="80" rx="12" fill="#FFFFFF" filter="url(#shadow)" />
+  <rect x="260" y="60" width="200" height="16" rx="8" fill="#3B82F6" opacity="0.8" />
+  <rect x="260" y="84" width="160" height="12" rx="6" fill="#64748B" opacity="0.6" />
+  
+  <!-- Stats Cards -->
+  <rect x="240" y="140" width="250" height="120" rx="12" fill="#FFFFFF" filter="url(#shadow)" />
+  <rect x="260" y="160" width="120" height="16" rx="8" fill="#8B5CF6" opacity="0.8" />
+  <rect x="260" y="190" width="180" height="40" rx="8" fill="#8B5CF6" opacity="0.2" />
+  
+  <rect x="510" y="140" width="250" height="120" rx="12" fill="#FFFFFF" filter="url(#shadow)" />
+  <rect x="530" y="160" width="120" height="16" rx="8" fill="#EC4899" opacity="0.8" />
+  <rect x="530" y="190" width="180" height="40" rx="8" fill="#EC4899" opacity="0.2" />
+  
+  <!-- Chart Area -->
+  <rect x="240" y="280" width="520" height="280" rx="12" fill="#FFFFFF" filter="url(#shadow)" />
+  <rect x="260" y="300" width="150" height="16" rx="8" fill="#64748B" opacity="0.8" />
+  
+  <!-- Chart Lines -->
+  <path d="M 280 480 L 380 400 L 480 440 L 580 360 L 680 420" 
+        stroke="#3B82F6" 
+        stroke-width="3" 
+        fill="none" />
+  <path d="M 280 460 L 380 380 L 480 420 L 580 340 L 680 400" 
+        stroke="#8B5CF6" 
+        stroke-width="3" 
+        fill="none" />
+        
+  <!-- Shadows -->
+  <defs>
+    <filter id="shadow" x="-4" y="0" width="108%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-opacity="0.1"/>
+    </filter>
+  </defs>
+</svg> 

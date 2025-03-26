@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800" height="400" viewBox="0 0 800 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="400" fill="#F3F4F6"/>
+  <path d="M400 200C444.183 200 480 164.183 480 120C480 75.8172 444.183 40 400 40C355.817 40 320 75.8172 320 120C320 164.183 355.817 200 400 200ZM400 240C333.333 240 240 253.333 240 320V360H560V320C560 253.333 466.667 240 400 240Z" fill="#D1D5DB"/>
+  <text x="400" y="200" text-anchor="middle" font-family="Arial" font-size="24" fill="#6B7280">Blog Cover Image</text>
+</svg> 

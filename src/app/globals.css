@@ -1,0 +1,667 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 240 5.9% 10%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 5.9% 10%;
+    --radius: 0.75rem;
+  }
+
+  .dark {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 240 5.9% 10%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 240 4.9% 83.9%;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased overflow-x-hidden min-h-screen;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  #__next {
+    @apply overflow-x-hidden;
+  }
+
+  main {
+    @apply overflow-x-hidden relative;
+  }
+
+  /* Base text colors */
+  h1, .h1 {
+    @apply text-indigo-900 dark:text-indigo-100 font-bold;
+  }
+
+  h2, .h2 {
+    @apply text-indigo-800 dark:text-indigo-200 font-bold;
+  }
+
+  h3, .h3 {
+    @apply text-indigo-700 dark:text-indigo-300 font-semibold;
+  }
+
+  p, .body-text {
+    @apply text-slate-700 dark:text-slate-300;
+  }
+
+  a:not(.btn-primary):not(.btn-secondary):not(.btn-outline) {
+    @apply text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Custom styles for better readability */
+.prose {
+  @apply text-foreground max-w-none;
+}
+
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4,
+.prose h5,
+.prose h6 {
+  @apply text-foreground font-bold;
+}
+
+.prose p {
+  @apply text-muted-foreground;
+}
+
+.prose code {
+  @apply bg-muted/50 rounded px-1 py-0.5;
+}
+
+.prose pre {
+  @apply bg-muted/50 border rounded-lg overflow-x-auto;
+}
+
+.prose img {
+  @apply rounded-lg;
+}
+
+.prose a {
+  @apply text-primary underline-offset-4 decoration-primary/50 hover:decoration-primary;
+}
+
+/* Editor output styling */
+.editor-output {
+  @apply bg-gray-800 dark:bg-gray-900 text-cyan-400 font-mono text-sm p-4 rounded-lg;
+}
+
+/* Project card hover effects */
+.project-card {
+  @apply transition-all duration-300 hover:shadow-lg hover:scale-[1.02];
+}
+
+/* Tutorial section animations */
+.tutorial-section {
+  @apply transition-all duration-300;
+}
+
+/* Responsive layout utilities */
+.responsive-container {
+  @apply container mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+.responsive-grid {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4;
+}
+
+/* Interactive elements */
+.interactive-element {
+  @apply transition-all duration-200 hover:shadow-md active:scale-95;
+}
+
+/* Code block styling */
+.code-block {
+  @apply bg-muted text-foreground p-4 rounded-lg overflow-x-auto font-mono text-sm;
+}
+
+/* Custom button styles */
+.btn-primary {
+  @apply bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-full 
+         hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl;
+}
+
+.btn-secondary {
+  @apply border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 
+         text-gray-700 dark:text-gray-300 px-6 py-3 rounded-full 
+         hover:scale-105 transition-all duration-300 shadow-md hover:shadow-lg;
+}
+
+.btn-outline {
+  @apply border-2 border-blue-600 dark:border-blue-400 text-blue-600 dark:text-blue-400 
+         px-6 py-3 rounded-full hover:bg-blue-600 hover:text-white dark:hover:bg-blue-400 
+         dark:hover:text-gray-900 transition-all duration-300;
+}
+
+/* Card styles */
+.card {
+  @apply bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden 
+         hover:shadow-xl transition-all duration-300;
+}
+
+.card-hover {
+  @apply hover:shadow-[0_0_30px_rgba(0,0,0,0.2)] dark:hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] transition-shadow duration-300;
+}
+
+/* Animation classes */
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-in forwards;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.5s ease-out forwards;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Keyframe animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Gradient text */
+.gradient-text {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600;
+}
+
+/* Section styles */
+.section-padding {
+  @apply relative py-12 sm:py-16 lg:py-20 w-full overflow-x-hidden;
+}
+
+.container-padding {
+  @apply px-4 md:px-6 lg:px-8;
+}
+
+/* Mobile menu backdrop */
+.mobile-menu-backdrop {
+  @apply fixed inset-0 bg-black/20 backdrop-blur-sm z-40;
+}
+
+/* Responsive typography */
+.h1 {
+  @apply text-4xl md:text-5xl lg:text-6xl font-bold;
+}
+
+.h2 {
+  @apply text-3xl md:text-4xl font-bold;
+}
+
+.h3 {
+  @apply text-2xl md:text-3xl font-bold;
+}
+
+/* Form elements */
+.input {
+  @apply w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 
+         bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500;
+}
+
+/* Hover effects */
+.hover-lift {
+  @apply transition-transform duration-300 hover:-translate-y-1;
+}
+
+.hover-glow {
+  @apply transition-shadow duration-300 hover:shadow-lg;
+}
+
+/* Alert styles */
+.alert {
+  @apply p-4 rounded-lg border;
+}
+
+.alert-info {
+  @apply bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800;
+}
+
+.alert-success {
+  @apply bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 border-green-200 dark:border-green-800;
+}
+
+.alert-warning {
+  @apply bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-300 border-yellow-200 dark:border-yellow-800;
+}
+
+.alert-error {
+  @apply bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 border-red-200 dark:border-red-800;
+}
+
+/* Utility classes for components */
+.text-primary {
+  color: hsl(var(--primary));
+}
+
+.text-primary-foreground {
+  color: hsl(var(--primary-foreground));
+}
+
+.text-muted-foreground {
+  color: hsl(var(--muted-foreground));
+}
+
+.bg-primary {
+  background-color: hsl(var(--primary));
+}
+
+.bg-muted {
+  background-color: hsl(var(--muted));
+}
+
+.bg-background {
+  background-color: hsl(var(--background));
+}
+
+.border-border {
+  border-color: hsl(var(--border));
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-in;
+}
+
+.hover\:glow { box-shadow: 0 0 10px rgba(255, 255, 0, 0.5); }
+.animate-pulse-slow { animation: pulse 3s infinite; }
+
+/* Update mobile menu styling */
+.md\:hidden .mobile-menu {
+  @apply w-full h-screen bg-background flex flex-col items-center justify-center;
+}
+
+.mobile-menu a {
+  @apply text-lg font-medium py-2;
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center px-6 py-3 
+      text-base font-medium text-white
+      bg-gradient-to-r from-violet-600 to-indigo-600 
+      dark:from-violet-500 dark:to-indigo-500
+      hover:from-violet-700 hover:to-indigo-700
+      dark:hover:from-violet-600 dark:hover:to-indigo-600
+      rounded-full transition-all duration-200 transform hover:scale-105;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center px-6 py-3 
+      text-base font-medium text-indigo-700 dark:text-indigo-300
+      bg-white dark:bg-gray-800 border border-indigo-200 dark:border-indigo-800
+      hover:bg-indigo-50 dark:hover:bg-indigo-900/30
+      rounded-full transition-all duration-200;
+  }
+
+  .btn-outline {
+    @apply inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-blue-600 dark:text-blue-400 border border-blue-600 dark:border-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/50 rounded-full transition-all duration-200;
+  }
+
+  .card {
+    @apply bg-white dark:bg-gray-900 rounded-xl shadow-lg;
+  }
+
+  .card h2 {
+    @apply text-indigo-800 dark:text-indigo-200 font-bold;
+  }
+
+  .card h3 {
+    @apply text-indigo-700 dark:text-indigo-300 font-semibold;
+  }
+
+  .card p {
+    @apply text-slate-700 dark:text-slate-300;
+  }
+
+  .project-card h3 {
+    @apply text-indigo-700 dark:text-indigo-300 font-semibold;
+  }
+
+  .project-card p {
+    @apply text-slate-600 dark:text-slate-400;
+  }
+
+  .testimonial-card blockquote {
+    @apply text-slate-700 dark:text-slate-300 italic;
+  }
+
+  .testimonial-card cite {
+    @apply text-indigo-700 dark:text-indigo-300 font-medium not-italic;
+  }
+
+  .faq-card h4 {
+    @apply text-indigo-700 dark:text-indigo-300 font-semibold;
+  }
+
+  .faq-card p {
+    @apply text-slate-600 dark:text-slate-400;
+  }
+
+  .nav-link {
+    @apply text-slate-700 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors;
+  }
+
+  .nav-link-active {
+    @apply text-indigo-600 dark:text-indigo-400;
+  }
+
+  .hover-lift {
+    @apply transition-all duration-200 hover:-translate-y-1 hover:shadow-lg;
+  }
+
+  .section-padding {
+    @apply py-16 md:py-24;
+  }
+
+  .container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .project-card {
+    @apply card p-6 hover:scale-[1.02] hover:border-blue-500/20 dark:hover:border-blue-400/20;
+  }
+
+  .testimonial-card {
+    @apply card p-8 hover:scale-[1.01] hover:border-purple-500/20 dark:hover:border-purple-400/20;
+  }
+
+  .faq-card {
+    @apply card p-6 hover:scale-[1.01] hover:border-green-500/20 dark:hover:border-green-400/20;
+  }
+
+  .input {
+    @apply rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900
+      shadow-[0_2px_10px_rgb(0,0,0,0.02)] dark:shadow-[0_2px_10px_rgb(0,0,0,0.08)]
+      focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/20
+      transition-all duration-200;
+  }
+
+  .button {
+    @apply rounded-lg font-medium transition-all duration-200
+      shadow-[0_2px_10px_rgb(0,0,0,0.04)] dark:shadow-[0_2px_10px_rgb(0,0,0,0.1)]
+      hover:shadow-[0_4px_20px_rgb(0,0,0,0.08)] dark:hover:shadow-[0_4px_20px_rgb(0,0,0,0.15)]
+      focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-gray-900;
+  }
+
+  .button-primary {
+    @apply button bg-blue-600 hover:bg-blue-700 text-white
+      focus:ring-blue-500/50 dark:focus:ring-blue-400/50;
+  }
+
+  .button-secondary {
+    @apply button bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700
+      text-gray-900 dark:text-gray-100
+      focus:ring-gray-500/50 dark:focus:ring-gray-400/50;
+  }
+
+  .button-outline {
+    @apply button border border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800
+      text-gray-900 dark:text-gray-100
+      focus:ring-gray-500/50 dark:focus:ring-gray-400/50;
+  }
+}
+
+@layer utilities {
+  .gradient-text {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-violet-600 to-indigo-600 dark:from-violet-400 dark:to-indigo-400;
+  }
+
+  .bg-grid-pattern {
+    background-image: url('/grid-pattern.svg');
+    background-repeat: repeat;
+  }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .animate-float-delayed {
+    animation: float 6s ease-in-out 2s infinite;
+  }
+
+  .animate-float-slow {
+    animation: float 8s ease-in-out 1s infinite;
+  }
+
+  .animate-gradient-slow {
+    animation: gradient 15s ease infinite;
+  }
+
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary via-primary/80 to-primary animate-text-gradient bg-[length:200%_auto];
+  }
+  
+  .glass-effect {
+    @apply bg-white/10 backdrop-blur-md border border-white/20 dark:bg-black/30 dark:border-white/10;
+  }
+
+  .hover-glass {
+    @apply hover:bg-white/20 dark:hover:bg-white/10 transition-colors duration-300;
+  }
+
+  .card-shadow {
+    @apply shadow-[0_0_15px_rgba(0,0,0,0.1)] dark:shadow-[0_0_15px_rgba(255,255,255,0.1)];
+  }
+
+  .animate-in {
+    animation: animate-in 0.5s ease-out;
+  }
+
+  @keyframes animate-in {
+    from {
+      opacity: 0;
+      transform: translateY(1rem);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-gradient {
+    background-size: 200%;
+    -webkit-animation: animatedgradient 6s ease infinite alternate;
+    animation: animatedgradient 6s ease infinite alternate;
+  }
+
+  @keyframes animatedgradient {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+@keyframes gradient {
+  0% {
+    opacity: 0;
+    transform: scale(1) rotate(0deg);
+  }
+  33% {
+    opacity: 0.5;
+    transform: scale(1.2) rotate(120deg);
+  }
+  67% {
+    opacity: 0.25;
+    transform: scale(0.9) rotate(240deg);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1) rotate(360deg);
+  }
+}
+
+/* Mobile Menu */
+.mobile-menu {
+  @apply fixed inset-0 z-50 bg-white dark:bg-gray-900 flex flex-col items-center justify-center;
+}
+
+.mobile-menu a {
+  @apply text-2xl font-medium py-4 text-gray-900 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 transition-colors;
+}
+
+/* Form Elements */
+input, textarea, select {
+  @apply rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-400 dark:focus:border-blue-400;
+}
+
+/* Hover Effects */
+.hover-underline {
+  @apply relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-current after:transition-all hover:after:w-full;
+}
+
+/* Responsive Typography */
+.h1 {
+  @apply text-4xl md:text-5xl lg:text-6xl font-bold;
+}
+
+.h3 {
+  @apply text-xl md:text-2xl font-bold;
+}
+
+.body-large {
+  @apply text-lg md:text-xl;
+}
+
+.body-small {
+  @apply text-sm md:text-base;
+}
+
+/* Container styles */
+.container {
+  @apply relative mx-auto w-full max-w-[1400px] px-4 sm:px-6 lg:px-8;
+}
+
+/* Prevent overflow on mobile devices */
+@media (max-width: 640px) {
+  .container {
+    @apply px-4 max-w-full overflow-hidden;
+  }
+  
+  .mobile-safe-padding {
+    @apply px-4;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  @apply w-2;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-200 dark:bg-gray-800 rounded-full
+    hover:bg-gray-300 dark:hover:bg-gray-700
+    transition-colors;
+}
+
+/* Dark theme overrides for Select components */
+.select-content {
+  @apply bg-[#161B22] border-[#30363D];
+}
+
+.select-item {
+  @apply text-gray-300 hover:bg-[#30363D] focus:bg-[#30363D];
+}
+
+.select-trigger {
+  @apply bg-transparent border-[#30363D] text-gray-300;
+}

@@ -1,0 +1,43 @@
+Required Images for Educational Platform
+
+1. Hero Section
+----------------
+- hero-banner.jpg (Main hero banner image)
+- hero-pattern.svg (Background pattern)
+
+2. Projects Section
+------------------
+- project-ai-learning.jpg (AI Learning Platform)
+- project-interactive-course.jpg (Interactive Course Platform)
+- project-adaptive-learning.jpg (Adaptive Learning System)
+- project-educational-analytics.jpg (Educational Analytics Dashboard)
+
+3. Features Section
+------------------
+- feature-ai.jpg (AI-Powered Learning)
+- feature-interactive.jpg (Interactive Content)
+- feature-analytics.jpg (Analytics Dashboard)
+- feature-community.jpg (Community Learning)
+
+4. Testimonials Section
+---------------------
+- testimonial-1.jpg (Student testimonial)
+- testimonial-2.jpg (Teacher testimonial)
+- testimonial-3.jpg (Institution testimonial)
+
+5. Blog Section
+--------------
+- blog-1.jpg (AI in Education)
+- blog-2.jpg (Future of Learning)
+- blog-3.jpg (Personalized Education)
+
+Image Specifications:
+--------------------
+- Hero Banner: 1920x1080px
+- Project Images: 800x600px
+- Feature Icons: 64x64px
+- Testimonial Images: 200x200px (circular)
+- Blog Images: 800x400px
+
+Note: All images should be optimized for web use with appropriate compression.
+Recommended format: WebP with JPG fallback 
