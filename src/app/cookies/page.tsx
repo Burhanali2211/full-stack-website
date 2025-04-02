@@ -1,3 +1,4 @@
+import { defaultViewport } from '@/app/metadata';
 import { Metadata } from "next";
 import { ScrollIndicator } from "@/components/ui/scroll-indicator";
 
@@ -5,6 +6,8 @@ export const metadata: Metadata = {
   title: "Cookie Policy - Educational Platform",
   description: "Our cookie policy and how we use tracking technologies",
 };
+
+export const viewport = defaultViewport;
 
 export default function CookiePolicyPage() {
   return (

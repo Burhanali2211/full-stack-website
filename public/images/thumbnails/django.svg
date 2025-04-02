@@ -1,0 +1,14 @@
+<svg width="600" height="400" viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="600" height="400" fill="#092E20"/>
+  
+  <!-- Django Logo -->
+  <path d="M190 160h40v120h-40z" fill="#FFFFFF"/>
+  <path d="M250 160h40v120c-13.333 10-40 20-60 0z" fill="#FFFFFF"/>
+  <path d="M310 160h40v120h-40z" fill="#FFFFFF"/>
+  <path d="M370 160h40v90c0 30-40 30-40 30z" fill="#FFFFFF"/>
+  <path d="M190 120h40v30h-40z" fill="#FFFFFF"/>
+  
+  <!-- Tutorial Label -->
+  <text x="300" y="70" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="white" text-anchor="middle">Web Development with Django</text>
+</svg> 

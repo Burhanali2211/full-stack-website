@@ -88,6 +88,7 @@ export default function WebGameProject() {
     <ProjectLayout
       title="Number Guessing Game"
       description="An interactive web game built with React and TypeScript, demonstrating state management, user input handling, and modern UI design principles."
+      videoId="R8rmfD9Y5-c"
     >
       <div className="space-y-8">
         {/* Project Overview */}

@@ -18,7 +18,8 @@ async function executePython(code: string): Promise<string> {
     
     return "Code executed successfully!";
   } catch (error) {
-    throw new Error("Error executing Python code");
+    console.error("Python execution error:", error);
+    throw new Error(error instanceof Error ? error.message : "Error executing Python code");
   }
 }
 
@@ -28,11 +29,19 @@ async function executeJavaScript(code: string): Promise<string> {
     // Simulate some processing time
     await new Promise(resolve => setTimeout(resolve, 500));
     
-    // In a real implementation, this would use a sandboxed environment
-    // For now, we'll just return a mock output
+    // Return a mock output based on the code
+    if (code.includes("fetch") || code.includes("api")) {
+      return "API request simulated successfully!";
+    } else if (code.includes("console.log")) {
+      return "Output logged to console!";
+    } else if (code.includes("function")) {
+      return "Function defined successfully!";
+    }
+    
     return "JavaScript code execution simulated successfully!";
   } catch (error) {
-    throw new Error("Error executing JavaScript code");
+    console.error("JavaScript execution error:", error);
+    throw new Error(error instanceof Error ? error.message : "Error executing JavaScript code");
   }
 }
 

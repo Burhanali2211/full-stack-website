@@ -79,7 +79,7 @@ export interface FileTreeItem {
 
 export interface EditorState {
   files: FileTreeItem[];
-  selectedFileId: string | null;
+  selectedFileId?: string;
   tabs: Tab[];
   isRunning: boolean;
   output: string;

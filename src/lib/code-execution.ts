@@ -1,13 +1,29 @@
-import { SupportedLanguage, ExecutionResult } from "@/types/playground";
-import { loadPyodide } from "pyodide";
+import { ExecutionResult } from "@/types/playground";
+import { SupportedLanguage } from "@/types/ide";
+import type { PyodideInterface } from "pyodide";
 
-let pyodide: any = null;
+declare global {
+  interface Window {
+    loadPyodide: () => Promise<PyodideInterface>;
+  }
+}
+
+let pyodide: PyodideInterface | null = null;
 
 async function initializePyodide() {
   if (!pyodide) {
-    pyodide = await loadPyodide({
-      indexURL: "https://cdn.jsdelivr.net/pyodide/v0.25.0/full/",
+    // Load pyodide script dynamically
+    const script = document.createElement('script');
+    script.src = "https://cdn.jsdelivr.net/pyodide/v0.25.0/full/pyodide.js";
+    document.head.appendChild(script);
+
+    // Wait for script to load
+    await new Promise((resolve) => {
+      script.onload = resolve;
     });
+
+    // Initialize pyodide
+    pyodide = await window.loadPyodide();
   }
   return pyodide;
 }
@@ -150,18 +166,26 @@ export async function executeCode(
   try {
     switch (language) {
       case "javascript":
+      case "typescript":
         return executeJavaScript(code);
       case "python":
         return executePython(code);
       case "html":
       case "css":
         return executeHtmlCss(code, language, previewRef);
+      case "cpp":
+      case "plaintext":
+        return Promise.resolve({
+          status: "error",
+          output: "",
+          error: `Language ${language} is not supported in the playground yet.`,
+        });
       default:
-        return {
+        return Promise.resolve({
           status: "error",
           output: "",
           error: `Language ${language} is not supported yet.`,
-        };
+        });
     }
   } catch (error) {
     return {

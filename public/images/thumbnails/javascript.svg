@@ -1,0 +1,13 @@
+<svg width="600" height="400" viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="600" height="400" fill="#F7DF1E"/>
+  
+  <!-- JavaScript Logo -->
+  <path d="M170 320V240C170 220 190 220 210 220C230 220 250 220 250 240V320" fill="none" stroke="#000000" stroke-width="36"/>
+  <path d="M310 320V240" fill="none" stroke="#000000" stroke-width="36"/>
+  <path d="M310 240C310 220 330 220 350 220C370 220 390 220 390 240" fill="none" stroke="#000000" stroke-width="36"/>
+  <path d="M390 240V280C390 300 370 300 350 300C330 300 310 300 310 320" fill="none" stroke="#000000" stroke-width="36"/>
+  
+  <!-- Tutorial Label -->
+  <text x="300" y="80" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="black" text-anchor="middle">JavaScript Essentials</text>
+</svg> 

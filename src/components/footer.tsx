@@ -11,8 +11,8 @@ export default function Footer() {
       <div className="container grid gap-8 md:grid-cols-2 lg:grid-cols-4">
         <div className="flex flex-col gap-2">
           <h3 className="font-bold text-lg">Educational Platform</h3>
-          <p className="text-muted-foreground">
-            Learn programming with interactive tutorials and hands-on exercises.
+          <p className="text-muted-foreground text-sm max-w-[42rem]">
+            Learn programming with hands-on projects and interactive exercises.
           </p>
           <div className="flex items-center mt-4 space-x-4">
             <Link href="https://github.com" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
@@ -32,9 +32,6 @@ export default function Footer() {
         
         <div className="flex flex-col gap-2">
           <h3 className="font-bold text-lg">Resources</h3>
-          <Link href="/tutorials" className="text-muted-foreground hover:text-foreground transition-colors">
-            Tutorials
-          </Link>
           <Link href="/projects" className="text-muted-foreground hover:text-foreground transition-colors">
             Projects
           </Link>

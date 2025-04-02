@@ -19,6 +19,10 @@ export interface BlogPost {
   updatedAt: string;
   category: BlogCategory;
   tags: string[];
+  series?: {
+    name: string;
+    order: number;
+  };
   seo: {
     title: string;
     description: string;
@@ -39,6 +43,7 @@ export type BlogCategory =
 
 export interface BlogSeries {
   id: string;
+  name: string;
   title: string;
   description: string;
   posts: string[];

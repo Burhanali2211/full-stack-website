@@ -1,0 +1,16 @@
+<svg width="600" height="400" viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="600" height="400" fill="#E44D26"/>
+  
+  <!-- HTML5 Logo -->
+  <path d="M190,80 L170,320 L300,350 L430,320 L410,80 Z" fill="#FFFFFF"/>
+  <path d="M300,340 L410,315 L430,100 L300,100 Z" fill="#EBEBEB"/>
+  <path d="M300,340 L190,315 L170,100 L300,100 Z" fill="#FFFFFF"/>
+  <path d="M300,200 L240,200 L235,150 L300,150 L300,120 L205,120 L210,220 L300,220 Z" fill="#E44D26"/>
+  <path d="M300,260 L245,245 L243,220 L270,220 L300,220 Z" fill="#E44D26"/>
+  <path d="M300,200 L360,200 L365,150 L300,150 L300,120 L395,120 L390,220 L300,220 Z" fill="#E44D26"/>
+  <path d="M300,260 L355,245 L357,220 L330,220 L300,220 Z" fill="#E44D26"/>
+  
+  <!-- Tutorial Label -->
+  <text x="300" y="80" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="white" text-anchor="middle">HTML Essentials</text>
+</svg> 

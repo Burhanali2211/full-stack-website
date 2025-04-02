@@ -1,3 +1,4 @@
+import { defaultViewport } from '@/app/metadata';
 import { Metadata } from "next";
 import { ScrollIndicator } from "@/components/ui/scroll-indicator";
 
@@ -5,6 +6,8 @@ export const metadata: Metadata = {
   title: "Privacy Policy - Educational Platform",
   description: "Our privacy practices and information handling procedures",
 };
+
+export const viewport = defaultViewport;
 
 export default function PrivacyPolicyPage() {
   return (

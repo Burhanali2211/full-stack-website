@@ -1,0 +1,11 @@
+<svg width="600" height="400" viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="600" height="400" fill="#3178C6"/>
+  
+  <!-- TypeScript Logo -->
+  <rect x="200" y="160" width="200" height="200" fill="white"/>
+  <path d="M242 280v-28h70v28h-20v84h-30v-84h-20zm128 42c0 10-2 18-5 24s-8 11-15 15c-7 3-15 5-25 5-6 0-12-1-17-2-5-2-10-4-13-7-4-3-7-6-10-9-3-4-5-7-8-11l18-11c3 4 5 8 7 10l6 6c2 2 4 3 7 3 5 0 9-1 12-3 3-3 4-7 4-13v-92h36v85z" fill="#3178C6"/>
+  
+  <!-- Tutorial Label -->
+  <text x="300" y="120" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="white" text-anchor="middle">TypeScript for React</text>
+</svg> 

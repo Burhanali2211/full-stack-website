@@ -1,6 +1,5 @@
 "use client";
 
-import Image from 'next/image';
 import ProjectLayout from '@/components/project-layout';
 import { motion } from 'framer-motion';
 
@@ -9,21 +8,15 @@ export default function PythonConverterProject() {
     <ProjectLayout
       title="Python File Converter"
       description="A versatile tool for converting files between different formats, built with Python and a modern UI."
+      videoId="jNQXAC9IVRw"
     >
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="space-y-8"
       >
-        <div className="aspect-video relative rounded-lg overflow-hidden border">
-          <Image
-            src="/projects/python-converter.png"
-            alt="Python File Converter Screenshot"
-            fill
-            className="object-cover"
-          />
-        </div>
-
+        {/* Video is now handled by ProjectLayout component */}
+        
         <section>
           <h2 className="text-2xl font-bold mb-4">Features</h2>
           <ul className="list-disc list-inside space-y-2">

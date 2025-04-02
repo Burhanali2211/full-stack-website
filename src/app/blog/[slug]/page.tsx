@@ -3,14 +3,11 @@ import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { getBlogPostBySlug, getBlogPosts, getBlogSeries, getRelatedPosts } from '@/lib/blog';
 import { MetaTags } from '@/components/seo/meta-tags';
-import { BlogPost } from '@/components/blog-post';
 import { Badge } from '@/components/ui/badge';
 import { MDXRemote } from 'next-mdx-remote/rsc';
-import rehypeHighlight from 'rehype-highlight';
-import rehypePrismPlus from 'rehype-prism-plus';
-import remarkGfm from 'remark-gfm';
 import { SeriesNavigation } from '@/components/blog/series-navigation';
 import { formatDate } from '@/lib/utils';
+import { defaultMetadata, defaultViewport } from '@/app/metadata';
 
 interface BlogPostPageProps {
   params: {
@@ -26,6 +23,8 @@ export async function generateStaticParams() {
   }));
 }
 
+export const viewport = defaultViewport;
+
 // Generate metadata for each blog post
 export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
   const post = await getBlogPostBySlug(params.slug);
@@ -38,6 +37,7 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
   }
 
   return {
+    ...defaultMetadata,
     title: post.seo.title,
     description: post.seo.description,
     keywords: post.seo.keywords,

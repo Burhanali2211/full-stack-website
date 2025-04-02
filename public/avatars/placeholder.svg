@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="150px" height="150px" viewBox="0 0 150 150" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <title>User Avatar Placeholder</title>
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <circle fill="#E2E8F0" cx="75" cy="75" r="75"/>
+        <path d="M75,85 C88.8071187,85 100,73.8071187 100,60 C100,46.1928813 88.8071187,35 75,35 C61.1928813,35 50,46.1928813 50,60 C50,73.8071187 61.1928813,85 75,85 Z M75,95 C53.2385763,95 35,113.238576 35,135 L115,135 C115,113.238576 96.7614237,95 75,95 Z" fill="#94A3B8"/>
+    </g>
+</svg> 

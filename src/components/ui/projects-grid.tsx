@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ProjectCard } from './project-card';
 import { ProjectCardSkeleton } from './project-card-skeleton';
+import { cn } from '@/lib/utils';
 
 interface Project {
   id: string | number;
@@ -25,6 +26,9 @@ interface ProjectsGridProps {
   selectedDifficultyFilters: string[];
   sortOption: string;
   isLoading?: boolean;
+  className?: string;
+  showModal?: boolean;
+  showLinkFooter?: boolean;
 }
 
 const difficultyOrder = {
@@ -39,6 +43,9 @@ export function ProjectsGrid({
   selectedDifficultyFilters,
   sortOption,
   isLoading,
+  className,
+  showModal = true,
+  showLinkFooter = true,
 }: ProjectsGridProps) {
   const filteredAndSortedProjects = useMemo(() => {
     if (isLoading) return [];
@@ -79,7 +86,7 @@ export function ProjectsGrid({
 
   if (isLoading) {
     return (
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3" role="list">
+      <div className={cn("projects-grid", className)} role="list">
         {Array.from({ length: 6 }).map((_, index) => (
           <ProjectCardSkeleton key={index} />
         ))}
@@ -89,7 +96,7 @@ export function ProjectsGrid({
 
   return (
     <div 
-      className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3" 
+      className={cn("projects-grid", className)}
       role="list"
       aria-label="Projects grid"
     >
@@ -105,8 +112,13 @@ export function ProjectsGrid({
               opacity: { duration: 0.2 },
               layout: { duration: 0.3 },
             }}
+            className="h-full"
           >
-            <ProjectCard {...project} />
+            <ProjectCard 
+              {...project} 
+              showModal={showModal}
+              showLinkFooter={showLinkFooter}
+            />
           </motion.div>
         ))}
         {filteredAndSortedProjects.length === 0 && (

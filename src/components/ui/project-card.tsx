@@ -1,10 +1,12 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useState, useCallback } from "react";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Clock, ChevronRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { ProjectModal } from "./project-modal";
+import { cn } from "@/lib/utils";
 
 interface ProjectCardProps {
   title: string;
@@ -18,6 +20,9 @@ interface ProjectCardProps {
   liveUrl?: string;
   docsUrl?: string;
   longDescription?: string;
+  className?: string;
+  showModal?: boolean;
+  showLinkFooter?: boolean;
 }
 
 const difficultyColor = {
@@ -32,78 +37,119 @@ export function ProjectCard(props: ProjectCardProps) {
     description, 
     image, 
     tags, 
+    link,
     difficulty, 
-    duration 
+    duration,
+    showModal = true, 
+    showLinkFooter = true,
+    className,
   } = props;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleOpenModal = useCallback(() => {
-    setIsModalOpen(true);
-  }, []);
+    if (showModal) {
+      setIsModalOpen(true);
+    }
+  }, [showModal]);
 
   const handleCloseModal = useCallback(() => {
     setIsModalOpen(false);
   }, []);
 
-  return (
-    <>
-      <div
-        onClick={handleOpenModal}
-        className="group relative cursor-pointer overflow-hidden rounded-lg bg-gradient-to-br from-card to-card/80 shadow-lg transition-all duration-300 hover:scale-[1.02] hover:shadow-xl"
-      >
-        <div className="pointer-events-none absolute -inset-px opacity-0 transition-opacity group-hover:opacity-100 bg-[radial-gradient(650px_circle_at_50%_50%,rgba(255,255,255,0.1),transparent_80%)]" />
-
-        <div className="relative h-48 overflow-hidden">
+  const CardContent = (
+    <div className="h-full group">
+      <div className={cn("project-card-inner", className)}>
+        <div className="project-card-image">
           <Image
             src={image}
             alt={title}
-            fill
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
-            priority={false}
+            width={400}
+            height={225}
+            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+            loading="lazy"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0" />
-          <div className="absolute bottom-4 left-4 flex gap-2">
-            <Badge
-              variant="outline"
-              className={`${difficultyColor[difficulty]} border-0`}
-            >
+          <div className="project-card-badge">
+            <div className={cn(
+              "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium",
+              difficultyColor[difficulty]
+            )}>
               {difficulty}
-            </Badge>
-            <Badge variant="outline" className="border-0 bg-white/20 text-white">
-              {duration}
-            </Badge>
+            </div>
           </div>
         </div>
-
-        <div className="p-4">
-          <h3 className="mb-2 text-xl font-bold">{title}</h3>
-          <p className="mb-4 line-clamp-2 text-sm text-muted-foreground">
-            {description}
-          </p>
-          <div className="mb-4 flex flex-wrap gap-2">
-            {tags.map((tag) => (
-              <Badge 
+        
+        <h3 className="project-card-title">
+          {title}
+        </h3>
+        
+        <p className="project-card-description">
+          {description}
+        </p>
+        
+        <div className="project-card-footer">
+          <div className="inline-flex items-center text-gray-500 dark:text-gray-400">
+            <Clock className="mr-1 h-3.5 w-3.5" />
+            <span className="text-xs">{duration}</span>
+          </div>
+          <div className="h-4 w-px bg-gray-300 dark:bg-gray-700"></div>
+          <div className="flex flex-wrap gap-1.5">
+            {tags.slice(0, 3).map((tag) => (
+              <span 
                 key={tag} 
-                variant="secondary" 
-                className="px-2 py-0.5 transition-colors hover:bg-primary/20"
+                className="inline-block bg-gray-100 dark:bg-gray-800 rounded-full px-2 py-0.5 text-xs font-medium text-gray-600 dark:text-gray-300"
               >
                 {tag}
-              </Badge>
+              </span>
             ))}
-          </div>
-          <div className="group/link inline-flex items-center gap-2 text-primary hover:text-primary/80">
-            View Details <ArrowRight size={16} className="transition-transform duration-300 group-hover/link:translate-x-1" />
+            {tags.length > 3 && (
+              <span className="inline-block bg-gray-100 dark:bg-gray-800 rounded-full px-2 py-0.5 text-xs font-medium text-gray-600 dark:text-gray-300">
+                +{tags.length - 3}
+              </span>
+            )}
           </div>
         </div>
-      </div>
 
-      <ProjectModal
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-        project={props}
-      />
+        {showLinkFooter && (
+          <div className="project-card-divider">
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium text-indigo-600 dark:text-indigo-400 group-hover:underline">
+                {showModal ? "View details" : "View project"}
+              </span>
+              <ChevronRight className="h-4 w-4 text-indigo-600 dark:text-indigo-400 transition-transform group-hover:translate-x-1" />
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+
+  return (
+    <>
+      {showModal ? (
+        <div 
+          onClick={handleOpenModal}
+          className="cursor-pointer h-full"
+        >
+          <div className="h-full shadow-lg hover:shadow-xl transition-all duration-300 rounded-xl overflow-hidden bg-white dark:bg-gray-800/60">
+            {CardContent}
+          </div>
+        </div>
+      ) : (
+        <Link href={link} className="block h-full">
+          <div className="h-full shadow-lg hover:shadow-xl transition-all duration-300 rounded-xl overflow-hidden bg-white dark:bg-gray-800/60">
+            {CardContent}
+          </div>
+        </Link>
+      )}
+
+      {showModal && (
+        <ProjectModal
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+          project={props}
+        />
+      )}
     </>
   );
 }

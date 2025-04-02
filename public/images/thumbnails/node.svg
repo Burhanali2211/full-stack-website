@@ -1,0 +1,11 @@
+<svg width="600" height="400" viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="600" height="400" fill="#333333"/>
+  
+  <!-- Node.js Logo -->
+  <path d="M300 150c-5.5 0-10.6 1.5-15 4L210 200c-8.5 5-13.8 14.1-13.8 24v104c0 9.9 5.3 19 13.8 24l75 46c4.4 2.5 9.5 4 15 4s10.6-1.5 15-4l75-46c8.5-5 13.8-14.1 13.8-24V224c0-9.9-5.3-19-13.8-24l-75-46c-4.4-2.5-9.5-4-15-4z" fill="#8CC84B"/>
+  <path d="M361.2 209.4c-1.1-0.6-2.3-0.6-3.4 0l-22.5 13c-1.1 0.6-1.7 1.8-1.7 3v26c0 1.2 0.6 2.4 1.7 3l22.5 13c1.1 0.6 2.3 0.6 3.4 0l22.5-13c1.1-0.6 1.7-1.8 1.7-3v-26c0-1.2-0.6-2.4-1.7-3l-22.5-13z" fill="white"/>
+  
+  <!-- Tutorial Label -->
+  <text x="300" y="120" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="white" text-anchor="middle">Node.js API Design</text>
+</svg> 

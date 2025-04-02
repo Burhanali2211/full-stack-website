@@ -3,550 +3,821 @@
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 import { ThemeToggle } from "./theme-toggle";
-import { Menu, X, ChevronDown, Search, Github, Bell } from "lucide-react";
-import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
+import { 
+  Menu, X, ChevronDown, Search, Bell, 
+  Home, BookOpen, FileText, Layers, 
+  Users, LifeBuoy, MessageCircle, Code,
+  ArrowRight, Command, Github, ExternalLink,
+  User, LogOut, Settings, HelpCircle, 
+  BookmarkIcon, LayoutDashboard, ShieldCheck,
+  AlertCircle, Star
+} from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "./ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
+import { Input } from "./ui/input";
+import { 
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Badge } from "./ui/badge";
 
 // Define the navigation items for reuse
 const navigationItems = [
   { 
+    name: "Home", 
+    href: "/",
+    icon: <Home className="h-4 w-4" />,
+  },
+  { 
     name: "Tutorials", 
     href: "/tutorials",
+    icon: <BookOpen className="h-4 w-4" />,
+    description: "Learn programming with step-by-step guides",
     submenu: [
-      { name: "Web Development", href: "/tutorials/web-development" },
-      { name: "Mobile Development", href: "/tutorials/mobile-development" },
-      { name: "Data Science", href: "/tutorials/data-science" },
-      { name: "DevOps", href: "/tutorials/devops" },
+      { name: "Python", href: "/tutorials?category=python", icon: <Code className="h-4 w-4" /> },
+      { name: "JavaScript", href: "/tutorials?category=javascript", icon: <Code className="h-4 w-4" /> },
+      { name: "Web Development", href: "/tutorials?category=web-dev", icon: <Layers className="h-4 w-4" /> },
+      { name: "All Tutorials", href: "/tutorials", icon: <ArrowRight className="h-4 w-4" /> },
     ]
   },
-  { name: "Projects", href: "/projects" },
-  { name: "Blog", href: "/blog" },
   { 
-    name: "Resources", 
-    href: "/resources",
+    name: "Projects", 
+    href: "/projects",
+    icon: <Code className="h-4 w-4" />,
+    description: "Explore featured projects and tutorials",
     submenu: [
-      { name: "Documentation", href: "/resources/documentation" },
-      { name: "Cheatsheets", href: "/resources/cheatsheets" },
-      { name: "Videos", href: "/resources/videos" },
+      { name: "Web Projects", href: "/projects?category=web", icon: <Layers className="h-4 w-4" /> },
+      { name: "Mobile Apps", href: "/projects?category=mobile", icon: <Layers className="h-4 w-4" /> },
+      { name: "Data Science", href: "/projects?category=data", icon: <Layers className="h-4 w-4" /> },
+      { name: "All Projects", href: "/projects", icon: <ArrowRight className="h-4 w-4" /> },
     ]
   },
-  { name: "Community", href: "/community" },
-  { name: "About", href: "/about" },
-  { name: "Contact", href: "/contact" },
+  { 
+    name: "Blog", 
+    href: "/blog",
+    icon: <FileText className="h-4 w-4" />,
+    description: "Articles, tips and industry insights"
+  },
+  { 
+    name: "Community", 
+    href: "/community",
+    icon: <Users className="h-4 w-4" />,
+    description: "Join discussions and connect with others",
+  },
+  { 
+    name: "About", 
+    href: "/about",
+    icon: <LifeBuoy className="h-4 w-4" />,
+    description: "Learn more about our platform"
+  },
 ];
 
-// Mock search results - replace with actual API call in production
-const searchItems = [
-  { title: "React Hooks Tutorial", category: "tutorial", href: "/tutorials/react-hooks" },
-  { title: "NextJS Routing Guide", category: "tutorial", href: "/tutorials/nextjs-routing" },
-  { title: "Building a Chat App", category: "project", href: "/projects/chat-app" },
-  { title: "CSS Animation Tricks", category: "blog", href: "/blog/css-animation-tricks" },
-  { title: "Responsive Design Best Practices", category: "tutorial", href: "/tutorials/responsive-design" },
+// Sample search data (would come from backend in production)
+const searchData = [
+  { id: 1, title: "Python Loops Tutorial", category: "tutorial", href: "/tutorials/python-loops" },
+  { id: 2, title: "Building a Chat App", category: "project", href: "/projects/chat-app" },
+  { id: 3, title: "CSS Animation Tricks", category: "blog", href: "/blog/css-animation-tricks" },
+  { id: 4, title: "Next.js Fundamentals", category: "tutorial", href: "/tutorials/nextjs-fundamentals" },
+  { id: 5, title: "React Hooks Guide", category: "tutorial", href: "/tutorials/react-hooks" },
+  { id: 6, title: "Data Visualization", category: "project", href: "/projects/data-viz" },
+  { id: 7, title: "TypeScript Best Practices", category: "blog", href: "/blog/typescript-best-practices" },
+  { id: 8, title: "API Development", category: "tutorial", href: "/tutorials/api-development" },
+];
+
+// Sample notifications data
+const notificationsData = [
+  { 
+    id: 1, 
+    title: "New tutorial available", 
+    message: "Check out our latest tutorial on React Hooks", 
+    time: "10 minutes ago",
+    href: "/tutorials/react-hooks",
+    read: false,
+    icon: <BookOpen className="h-4 w-4" />
+  },
+  { 
+    id: 2, 
+    title: "Your project was featured", 
+    message: "Congratulations! Your project was selected as a featured item", 
+    time: "2 hours ago",
+    href: "/projects/featured",
+    read: false,
+    icon: <Star className="h-4 w-4" />
+  },
+  { 
+    id: 3, 
+    title: "Community event reminder", 
+    message: "Don't forget about the upcoming webinar tomorrow", 
+    time: "1 day ago",
+    href: "/community/events",
+    read: true,
+    icon: <Users className="h-4 w-4" />
+  },
 ];
 
 export default function Navbar() {
+  const [mounted, setMounted] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [activeSubmenu, setActiveSubmenu] = useState<string | null>(null);
+  const [hoveredItem, setHoveredItem] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<typeof searchData>([]);
+  const [filteredResults, setFilteredResults] = useState<typeof searchData>([]);
+  const [showSearchResults, setShowSearchResults] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // Simulated login state
+  const [notifications, setNotifications] = useState(notificationsData);
   const [searchFocused, setSearchFocused] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [searchResults, setSearchResults] = useState<typeof searchItems>([]);
-  const [showResults, setShowResults] = useState(false);
-  const [notificationCount, setNotificationCount] = useState(3);
-  const [showNotifications, setShowNotifications] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
+  const [currentCategory, setCurrentCategory] = useState<string | null>(null);
+  
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const searchResultsRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const router = useRouter();
-  const searchRef = useRef<HTMLDivElement>(null);
-  const notificationRef = useRef<HTMLDivElement>(null);
-  
-  // Framer Motion scroll animation
-  const { scrollY } = useScroll();
-  const navbarBackground = useTransform(
-    scrollY,
-    [0, 50],
-    ["rgba(255, 255, 255, 0.8)", "rgba(255, 255, 255, 0.97)"]
-  );
-  const navbarBackgroundDark = useTransform(
-    scrollY,
-    [0, 50],
-    ["rgba(17, 24, 39, 0.8)", "rgba(17, 24, 39, 0.97)"]
-  );
-  const navbarHeight = useTransform(scrollY, [0, 50], ["4.5rem", "3.5rem"]);
-  
-  // Handle search input
+
+  // Handle scroll effect with throttling for performance
   useEffect(() => {
-    if (searchTerm.length > 1) {
-      // Filter search results (replace with API call in production)
-      const filteredResults = searchItems.filter(item => 
-        item.title.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setSearchResults(filteredResults);
-      setShowResults(true);
+    let scrollTimer: NodeJS.Timeout;
+    const handleScroll = () => {
+      if (scrollTimer) return;
+      scrollTimer = setTimeout(() => {
+        setScrolled(window.scrollY > 10);
+        scrollTimer = undefined as unknown as NodeJS.Timeout;
+      }, 100);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (scrollTimer) clearTimeout(scrollTimer);
+    };
+  }, []);
+
+  // Initialize search data
+  useEffect(() => {
+    setSearchResults(searchData);
+  }, []);
+
+  // Handle mounting
+  useEffect(() => {
+    setMounted(true);
+    
+    // Simulate checking if user is logged in (would be from auth context in a real app)
+    const checkLoginStatus = async () => {
+      // This would be replaced with actual auth check
+      const userLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+      setIsLoggedIn(userLoggedIn);
+    };
+    
+    checkLoginStatus();
+  }, []);
+
+  // Handle search functionality
+  useEffect(() => {
+    if (searchQuery.length >= 2) {
+      // Filter search results based on query and category
+      const filtered = searchResults.filter(item => {
+        const matchesQuery = item.title.toLowerCase().includes(searchQuery.toLowerCase());
+        const matchesCategory = currentCategory ? item.category === currentCategory : true;
+        return matchesQuery && matchesCategory;
+      });
+      
+      setFilteredResults(filtered);
+      setShowSearchResults(true);
     } else {
-      setShowResults(false);
+      setShowSearchResults(false);
     }
-  }, [searchTerm]);
+  }, [searchQuery, currentCategory, searchResults]);
+
+  // Close search results when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        searchResultsRef.current && 
+        !searchResultsRef.current.contains(e.target as Node) &&
+        searchInputRef.current && 
+        !searchInputRef.current.contains(e.target as Node)
+      ) {
+        setShowSearchResults(false);
+        setSearchFocused(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Cmd/Ctrl + K to focus search
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        searchInputRef.current?.focus();
+        setSearchFocused(true);
+      }
+      
+      // Escape to close dropdowns/menus
+      if (e.key === 'Escape') {
+        setShowSearchResults(false);
+        setSearchFocused(false);
+        if (isMenuOpen) setIsMenuOpen(false);
+      }
+    };
+    
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isMenuOpen]);
 
   // Handle search submission
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (searchTerm.trim()) {
-      router.push(`/search?q=${encodeURIComponent(searchTerm)}`);
-      setSearchTerm("");
-      setShowResults(false);
+    if (searchQuery.trim()) {
+      router.push(`/search?q=${encodeURIComponent(searchQuery)}${currentCategory ? `&category=${currentCategory}` : ''}`);
+      setSearchQuery("");
+      setShowSearchResults(false);
       setSearchFocused(false);
     }
   };
 
-  // Handle toggle submenu
-  const handleToggleSubmenu = (name: string) => {
-    setActiveSubmenu(activeSubmenu === name ? null : name);
-  };
-
-  // Handle scroll effect
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
-      if (isMenuOpen) setIsMenuOpen(false);
-      if (activeSubmenu) setActiveSubmenu(null);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [isMenuOpen, activeSubmenu]);
-
-  // Handle click outside of search and notifications
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
-        setSearchFocused(false);
-        setShowResults(false);
-      }
-      if (notificationRef.current && !notificationRef.current.contains(event.target as Node)) {
-        setShowNotifications(false);
-      }
-    };
-    
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [searchRef, notificationRef]);
-
-  // Close menu when route changes
+  // Check if mobile menu should close (route change)
   useEffect(() => {
     setIsMenuOpen(false);
-    setActiveSubmenu(null);
   }, [pathname]);
 
-  // Notification items
-  const notifications = [
-    { id: 1, text: "New tutorial: React Patterns 2023", time: "10 min ago", href: "/tutorials/react-patterns" },
-    { id: 2, text: "Your project submission was approved", time: "1 hour ago", href: "/account/projects" },
-    { id: 3, text: "New comment on your question", time: "3 hours ago", href: "/community/questions/123" },
-  ];
+  // Mark notification as read
+  const markAsRead = (id: number) => {
+    setNotifications(prev => 
+      prev.map(item => 
+        item.id === id ? { ...item, read: true } : item
+      )
+    );
+  };
 
-  // Mark notifications as read
-  const handleMarkAllAsRead = () => {
-    setNotificationCount(0);
+  // Mark all notifications as read
+  const markAllAsRead = () => {
+    setNotifications(prev => 
+      prev.map(item => ({ ...item, read: true }))
+    );
+  };
+
+  // Handle user logout
+  const handleLogout = () => {
+    // This would call your auth logout in a real app
+    localStorage.removeItem('isLoggedIn');
+    setIsLoggedIn(false);
+  };
+
+  // Handle user login (for demo purposes)
+  const handleLogin = () => {
+    localStorage.setItem('isLoggedIn', 'true');
+    setIsLoggedIn(true);
+  };
+
+  // Count unread notifications
+  const unreadCount = notifications.filter(n => !n.read).length;
+
+  // Define animation variants
+  const mobileMenuVariants = {
+    closed: { opacity: 0, x: "100%" },
+    open: { opacity: 1, x: 0 }
+  };
+
+  const dropdownVariants = {
+    hidden: { opacity: 0, y: -5, height: 0 },
+    visible: { opacity: 1, y: 0, height: "auto" }
   };
 
   return (
-    <motion.header 
-      className={cn(
-        "fixed top-0 left-0 right-0 z-50 border-b transition-all duration-300",
-        isScrolled 
-          ? "border-gray-200 dark:border-gray-800 shadow-sm backdrop-blur-md" 
-          : "border-transparent backdrop-blur-sm"
-      )}
-      style={{ 
-        backgroundColor: typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches 
-          ? navbarBackgroundDark 
-          : navbarBackground,
-        height: navbarHeight,
-      }}
-    >
-      <div className="container flex items-center justify-between h-full">
-        {/* Logo */}
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5 }}
-          className="flex-shrink-0"
-        >
-          <Link 
-            href="/" 
-            className="flex items-center space-x-2 font-bold text-base sm:text-lg md:text-xl"
-            aria-label="Dev Mindset"
-          >
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 dark:from-indigo-400 dark:via-purple-400 dark:to-pink-400">
-              Dev Mindset
+    <>
+      <header 
+        className={cn(
+          "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
+          scrolled ? "py-2 bg-background/90 backdrop-blur-lg shadow-sm border-b" : "py-4"
+        )}
+      >
+        <div className="container flex items-center justify-between">
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-2 font-bold text-xl text-foreground">
+            <span className="inline-block w-8 h-8 rounded-lg overflow-hidden bg-primary">
+              <Image 
+                src="/images/logo.svg" 
+                alt="Logo" 
+                width={32} 
+                height={32} 
+                className="object-cover"
+                onError={(e) => {
+                  // Fallback if image fails to load
+                  const target = e.target as HTMLElement;
+                  target.innerHTML = "ED";
+                  target.className = "w-full h-full flex items-center justify-center text-primary-foreground";
+                }}
+              />
             </span>
+            <span className="tracking-tight">EduCode</span>
           </Link>
-        </motion.div>
-        
-        {/* Desktop Navigation */}
-        <nav className="hidden lg:flex items-center space-x-1">
-          {navigationItems.map((item) => (
-            <div key={item.name} className="relative">
-              {item.submenu ? (
-                <>
-                  <motion.button
-                    whileHover={{ y: -2 }}
-                    whileTap={{ y: 0 }}
-                    className={cn(
-                      "px-3 py-2 flex items-center space-x-1 rounded-md text-gray-700 dark:text-gray-300 transition-colors",
-                      isScrolled 
-                        ? "hover:bg-gray-100 dark:hover:bg-gray-800" 
-                        : "hover:bg-white/20 dark:hover:bg-black/20",
-                      pathname.startsWith(item.href) 
-                        ? "text-indigo-700 dark:text-indigo-400 font-medium" 
-                        : ""
-                    )}
-                    onClick={() => handleToggleSubmenu(item.name)}
-                  >
-                    <span>{item.name}</span>
-                    <ChevronDown size={16} className={`transition-transform duration-300 ${activeSubmenu === item.name ? 'rotate-180' : ''}`} />
-                  </motion.button>
-                  
+
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center space-x-1">
+            {navigationItems.map((item) => (
+              <div 
+                key={item.name} 
+                className="relative" 
+                onMouseEnter={() => setHoveredItem(item.name)}
+                onMouseLeave={() => setHoveredItem(null)}
+              >
+                <Link 
+                  href={item.href}
+                  className={cn(
+                    "px-3 py-2 rounded-md text-sm font-medium flex items-center gap-1.5 transition-colors",
+                    pathname === item.href || pathname.startsWith(item.href + '/')
+                      ? "text-primary" 
+                      : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
+                  )}
+                >
+                  {item.name}
+                  {item.submenu && <ChevronDown className="h-3.5 w-3.5" />}
+                </Link>
+
+                {/* Dropdown for desktop navigation */}
+                {item.submenu && hoveredItem === item.name && (
                   <AnimatePresence>
-                    {activeSubmenu === item.name && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 10, height: 0 }}
-                        animate={{ opacity: 1, y: 0, height: 'auto' }}
-                        exit={{ opacity: 0, y: 10, height: 0 }}
-                        transition={{ duration: 0.2 }}
-                        className="absolute top-full left-0 mt-1 w-60 p-2 rounded-lg bg-white dark:bg-gray-900 shadow-xl border border-gray-200 dark:border-gray-800 z-50"
-                      >
-                        {item.submenu.map((subitem) => (
-                          <Link 
-                            key={subitem.name}
-                            href={subitem.href}
-                            className="block px-4 py-2 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                            onClick={() => setActiveSubmenu(null)}
+                    <motion.div 
+                      initial="hidden"
+                      animate="visible"
+                      exit="hidden"
+                      variants={dropdownVariants}
+                      className="absolute top-full left-0 w-56 mt-0.5 p-2 shadow-lg rounded-lg bg-popover/95 backdrop-blur-md border z-50"
+                    >
+                      <div className="p-2 text-xs font-medium text-muted-foreground">
+                        {item.description}
+                      </div>
+                      <div className="py-1">
+                        {item.submenu.map((subItem) => (
+                          <Link
+                            key={subItem.name}
+                            href={subItem.href}
+                            className="flex items-center gap-2 px-3 py-2 text-sm rounded-md text-foreground hover:bg-accent transition-colors"
                           >
-                            {subitem.name}
+                            {subItem.icon}
+                            <span>{subItem.name}</span>
                           </Link>
                         ))}
-                      </motion.div>
-                    )}
+                      </div>
+                    </motion.div>
                   </AnimatePresence>
-                </>
-              ) : (
-                <motion.div
-                  whileHover={{ y: -2 }}
-                  whileTap={{ y: 0 }}
-                >
-                  <Link 
-                    href={item.href} 
-                    className={cn(
-                      "px-3 py-2 block rounded-md text-gray-700 dark:text-gray-300 transition-colors",
-                      isScrolled 
-                        ? "hover:bg-gray-100 dark:hover:bg-gray-800" 
-                        : "hover:bg-white/20 dark:hover:bg-black/20",
-                      pathname === item.href 
-                        ? "text-indigo-700 dark:text-indigo-400 font-medium" 
-                        : ""
-                    )}
-                  >
-                    {item.name}
-                  </Link>
-                </motion.div>
-              )}
-            </div>
-          ))}
-        </nav>
-        
-        <div className="flex items-center gap-1 sm:gap-2 md:gap-4">
-          {/* Search Bar */}
-          <motion.div 
-            ref={searchRef}
-            className={`hidden md:flex items-center relative ${searchFocused ? 'w-56 md:w-72' : 'w-40 md:w-48'}`}
-            animate={{ width: searchFocused ? 'auto' : 'auto' }}
-            transition={{ duration: 0.3 }}
-          >
-            <form onSubmit={handleSearchSubmit} className="w-full relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500 dark:text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className={cn(
-                  "w-full pl-10 pr-4 py-2 text-sm rounded-full border text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all",
-                  isScrolled
-                    ? "border-gray-200 dark:border-gray-700 bg-white/90 dark:bg-gray-800/90"
-                    : "border-gray-200/70 dark:border-gray-700/70 bg-white/70 dark:bg-gray-800/70"
                 )}
-                onFocus={() => setSearchFocused(true)}
-              />
-            </form>
-            
-            {/* Search Results Dropdown */}
-            <AnimatePresence>
-              {showResults && searchResults.length > 0 && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10, height: 0 }}
-                  animate={{ opacity: 1, y: 0, height: 'auto' }}
-                  exit={{ opacity: 0, y: 10, height: 0 }}
-                  transition={{ duration: 0.2 }}
-                  className="absolute top-full left-0 right-0 mt-1 p-2 rounded-lg bg-white dark:bg-gray-900 shadow-xl border border-gray-200 dark:border-gray-800 z-50"
-                >
-                  <div className="text-xs font-medium text-gray-500 dark:text-gray-400 px-2 py-1">
-                    Search Results
-                  </div>
-                  {searchResults.map((result, index) => (
-                    <Link
-                      key={index}
-                      href={result.href}
-                      className="block px-2 py-1.5 text-sm rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                      onClick={() => {
-                        setSearchTerm("");
-                        setShowResults(false);
-                        setSearchFocused(false);
-                      }}
-                    >
-                      <div className="font-medium">{result.title}</div>
-                      <div className="text-xs text-gray-500 dark:text-gray-400 capitalize">{result.category}</div>
-                    </Link>
-                  ))}
-                  <Link
-                    href={`/search?q=${encodeURIComponent(searchTerm)}`}
-                    className="block mt-1 px-2 py-1.5 text-xs text-center text-indigo-600 dark:text-indigo-400 hover:underline"
-                    onClick={() => {
-                      setSearchTerm("");
-                      setShowResults(false);
-                      setSearchFocused(false);
-                    }}
+              </div>
+            ))}
+          </nav>
+
+          {/* Right-side actions */}
+          <div className="flex items-center space-x-2 md:space-x-3">
+            {/* Search */}
+            <div className="relative">
+              <form onSubmit={handleSearchSubmit} className="relative group">
+                <div className="relative">
+                  <Input
+                    ref={searchInputRef}
+                    type="text"
+                    placeholder={searchFocused ? "Search..." : "Search (⌘K)"}
+                    className={cn(
+                      "w-[120px] sm:w-[150px] md:w-[200px] rounded-full bg-accent focus-visible:ring-primary pr-8",
+                      searchFocused && "w-[180px] sm:w-[220px] md:w-[280px]"
+                    )}
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onFocus={() => setSearchFocused(true)}
+                  />
+                  <button 
+                    type="submit" 
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                    aria-label="Search"
                   >
-                    View all results
-                  </Link>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </motion.div>
-          
-          {/* Theme Toggle */}
-          <ThemeToggle />
-          
-          {/* Notification Bell - Desktop Only */}
-          <motion.div
-            ref={notificationRef}
-            className="hidden md:block relative"
-          >
-            <motion.button
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-              className="relative p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
-              onClick={() => setShowNotifications(!showNotifications)}
-            >
-              <Bell size={20} className="text-gray-700 dark:text-gray-300" />
-              {notificationCount > 0 && (
-                <span className="absolute top-1 right-1 w-4 h-4 flex items-center justify-center text-[10px] font-bold text-white bg-red-500 rounded-full">
-                  {notificationCount > 9 ? '9+' : notificationCount}
-                </span>
-              )}
-            </motion.button>
-            
-            {/* Notifications Dropdown */}
-            <AnimatePresence>
-              {showNotifications && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10, height: 0 }}
-                  animate={{ opacity: 1, y: 0, height: 'auto' }}
-                  exit={{ opacity: 0, y: 10, height: 0 }}
-                  transition={{ duration: 0.2 }}
-                  className="absolute top-full right-0 mt-1 w-72 p-2 rounded-lg bg-white dark:bg-gray-900 shadow-xl border border-gray-200 dark:border-gray-800 z-50"
-                >
-                  <div className="flex items-center justify-between px-2 py-1.5">
-                    <div className="text-sm font-medium text-gray-700 dark:text-gray-300">Notifications</div>
-                    <button 
-                      className="text-xs text-indigo-600 dark:text-indigo-400 hover:underline"
-                      onClick={handleMarkAllAsRead}
+                    <Search className="h-4 w-4" />
+                  </button>
+                </div>
+
+                {/* Category filters - shown when search is focused */}
+                {searchFocused && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: -5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="absolute top-[calc(100%+4px)] left-0 w-full flex flex-wrap gap-1 bg-background/80 backdrop-blur-sm p-1.5 rounded-lg border shadow-sm"
+                  >
+                    <Badge 
+                      variant={currentCategory === null ? "default" : "outline"}
+                      className="text-[10px] h-5 cursor-pointer hover:bg-accent/50"
+                      onClick={() => setCurrentCategory(null)}
                     >
-                      Mark all as read
-                    </button>
+                      All
+                    </Badge>
+                    <Badge 
+                      variant={currentCategory === "tutorial" ? "default" : "outline"}
+                      className="text-[10px] h-5 cursor-pointer hover:bg-accent/50"
+                      onClick={() => setCurrentCategory("tutorial")}
+                    >
+                      Tutorials
+                    </Badge>
+                    <Badge 
+                      variant={currentCategory === "project" ? "default" : "outline"}
+                      className="text-[10px] h-5 cursor-pointer hover:bg-accent/50"
+                      onClick={() => setCurrentCategory("project")}
+                    >
+                      Projects
+                    </Badge>
+                    <Badge 
+                      variant={currentCategory === "blog" ? "default" : "outline"}
+                      className="text-[10px] h-5 cursor-pointer hover:bg-accent/50"
+                      onClick={() => setCurrentCategory("blog")}
+                    >
+                      Blog
+                    </Badge>
+                  </motion.div>
+                )}
+              </form>
+
+              {/* Search Results */}
+              {showSearchResults && filteredResults.length > 0 && (
+                <div 
+                  ref={searchResultsRef}
+                  className="absolute right-0 mt-10 w-full sm:min-w-[300px] bg-popover/95 backdrop-blur-md shadow-lg rounded-lg border p-2 z-50"
+                >
+                  <div className="py-1 px-3 text-xs text-muted-foreground">
+                    Found {filteredResults.length} result{filteredResults.length !== 1 ? 's' : ''}
                   </div>
                   
-                  <div className="mt-1 space-y-1">
-                    {notifications.map((notification) => (
+                  <div className="max-h-[300px] overflow-y-auto my-1">
+                    {filteredResults.map((result) => (
                       <Link
-                        key={notification.id}
-                        href={notification.href}
-                        className="block px-3 py-2 text-sm rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                        onClick={() => setShowNotifications(false)}
+                        key={result.id}
+                        href={result.href}
+                        className="block px-3 py-2 hover:bg-accent rounded-md text-sm"
+                        onClick={() => {
+                          setSearchQuery("");
+                          setShowSearchResults(false);
+                          setSearchFocused(false);
+                        }}
                       >
-                        <div className="font-medium">{notification.text}</div>
-                        <div className="text-xs text-gray-500 dark:text-gray-400">{notification.time}</div>
+                        <div className="font-medium">{result.title}</div>
+                        <div className="text-xs text-muted-foreground capitalize flex items-center">
+                          {result.category === "tutorial" && <BookOpen className="h-3 w-3 mr-1" />}
+                          {result.category === "project" && <Code className="h-3 w-3 mr-1" />}
+                          {result.category === "blog" && <FileText className="h-3 w-3 mr-1" />}
+                          {result.category}
+                        </div>
                       </Link>
                     ))}
                   </div>
                   
-                  <Link
-                    href="/notifications"
-                    className="block mt-1 px-2 py-1.5 text-xs text-center text-indigo-600 dark:text-indigo-400 hover:underline border-t border-gray-200 dark:border-gray-800 pt-1"
-                    onClick={() => setShowNotifications(false)}
-                  >
-                    View all notifications
-                  </Link>
-                </motion.div>
+                  <div className="border-t mt-1 pt-1 px-3">
+                    <button
+                      onClick={() => {
+                        if (searchQuery.trim()) {
+                          router.push(`/search?q=${encodeURIComponent(searchQuery)}${currentCategory ? `&category=${currentCategory}` : ''}`);
+                          setSearchQuery("");
+                          setShowSearchResults(false);
+                          setSearchFocused(false);
+                        }
+                      }}
+                      className="text-xs flex items-center gap-1 text-primary hover:underline py-1"
+                    >
+                      See all results <ArrowRight className="h-3 w-3" />
+                    </button>
+                  </div>
+                </div>
               )}
-            </AnimatePresence>
-          </motion.div>
-          
-          {/* GitHub Link - Desktop Only */}
-          <motion.a
-            href="https://github.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            className="hidden md:flex p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
-          >
-            <Github size={20} className="text-gray-700 dark:text-gray-300" />
-          </motion.a>
-          
-          {/* Login/Sign up Buttons */}
-          <div className="hidden md:flex items-center gap-2">
-            <Button asChild variant="ghost" size="sm" className="text-gray-700 dark:text-gray-300">
-              <Link href="/auth/login">Log in</Link>
+              
+              {/* No results message */}
+              {showSearchResults && searchQuery.length >= 2 && filteredResults.length === 0 && (
+                <div 
+                  ref={searchResultsRef}
+                  className="absolute right-0 mt-10 w-full sm:min-w-[300px] bg-popover/95 backdrop-blur-md shadow-lg rounded-lg border p-4 z-50 text-center"
+                >
+                  <AlertCircle className="h-5 w-5 mx-auto mb-2 text-muted-foreground" />
+                  <p className="text-sm font-medium">No results found</p>
+                  <p className="text-xs text-muted-foreground mt-1">Try a different search term or category</p>
+                </div>
+              )}
+            </div>
+
+            {/* Theme Toggle */}
+            <ThemeToggle />
+
+            {/* Notifications Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="relative">
+                  <Bell className="h-5 w-5" />
+                  {unreadCount > 0 && (
+                    <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] text-primary-foreground">
+                      {unreadCount}
+                    </span>
+                  )}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-80">
+                <div className="flex items-center justify-between px-3 py-2">
+                  <DropdownMenuLabel>Notifications</DropdownMenuLabel>
+                  {unreadCount > 0 && (
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      onClick={markAllAsRead} 
+                      className="h-8 text-xs text-muted-foreground hover:text-foreground"
+                    >
+                      Mark all as read
+                    </Button>
+                  )}
+                </div>
+                <DropdownMenuSeparator />
+                {notifications.length > 0 ? (
+                  <div className="max-h-[300px] overflow-y-auto">
+                    {notifications.map((notification) => (
+                      <div key={notification.id} className="px-4 py-2.5 hover:bg-accent">
+                        <Link 
+                          href={notification.href} 
+                          onClick={() => markAsRead(notification.id)}
+                          className="flex gap-3"
+                        >
+                          <div className={cn(
+                            "flex-shrink-0 h-8 w-8 rounded-full flex items-center justify-center",
+                            notification.read ? "bg-muted" : "bg-primary/10"
+                          )}>
+                            {notification.icon}
+                          </div>
+                          <div>
+                            <p className={cn(
+                              "text-sm font-medium",
+                              notification.read ? "text-foreground" : "text-primary"
+                            )}>
+                              {notification.title}
+                            </p>
+                            <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">
+                              {notification.message}
+                            </p>
+                            <p className="text-[10px] text-muted-foreground mt-1">
+                              {notification.time}
+                            </p>
+                          </div>
+                        </Link>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="px-4 py-8 text-center">
+                    <Bell className="h-5 w-5 mx-auto mb-2 text-muted-foreground" />
+                    <p className="text-sm text-muted-foreground">No notifications yet</p>
+                  </div>
+                )}
+                <DropdownMenuSeparator />
+                <div className="p-2">
+                  <Button asChild variant="outline" size="sm" className="w-full justify-center text-xs">
+                    <Link href="/notifications">View all notifications</Link>
+                  </Button>
+                </div>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            {/* GitHub Link - Hidden on smaller screens */}
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="hidden sm:flex text-muted-foreground hover:text-foreground transition-colors" 
+              asChild
+            >
+              <a href="https://github.com" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+                <Github className="h-5 w-5" />
+              </a>
             </Button>
-            <Button asChild size="sm" className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 dark:from-indigo-500 dark:to-purple-500 text-white border-0">
-              <Link href="/auth/signup">Sign up</Link>
+
+            {/* User Account / Login Button */}
+            {isLoggedIn ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm" className="gap-2 hidden sm:flex">
+                    <Avatar className="h-6 w-6">
+                      <AvatarImage src="/images/avatars/user.jpg" alt="User" />
+                      <AvatarFallback>U</AvatarFallback>
+                    </Avatar>
+                    <span className="hidden md:inline">Account</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <div className="flex items-center gap-2 p-2">
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src="/images/avatars/user.jpg" alt="User" />
+                      <AvatarFallback>U</AvatarFallback>
+                    </Avatar>
+                    <div className="flex flex-col">
+                      <span className="text-sm font-medium">User Name</span>
+                      <span className="text-xs text-muted-foreground">user@example.com</span>
+                    </div>
+                  </div>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link href="/dashboard" className="flex items-center gap-2 cursor-pointer">
+                      <LayoutDashboard className="h-4 w-4" />
+                      <span>Dashboard</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/profile" className="flex items-center gap-2 cursor-pointer">
+                      <User className="h-4 w-4" />
+                      <span>Profile</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/bookmarks" className="flex items-center gap-2 cursor-pointer">
+                      <BookmarkIcon className="h-4 w-4" />
+                      <span>Bookmarks</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link href="/settings" className="flex items-center gap-2 cursor-pointer">
+                      <Settings className="h-4 w-4" />
+                      <span>Settings</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/help" className="flex items-center gap-2 cursor-pointer">
+                      <HelpCircle className="h-4 w-4" />
+                      <span>Help & Support</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem 
+                    className="text-destructive focus:text-destructive cursor-pointer" 
+                    onClick={handleLogout}
+                  >
+                    <LogOut className="h-4 w-4 mr-2" />
+                    <span>Logout</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Button size="sm" className="hidden sm:flex gap-1 items-center" onClick={handleLogin}>
+                <span>Log In</span>
+                <ExternalLink className="ml-1 h-3.5 w-3.5" />
+              </Button>
+            )}
+
+            {/* Mobile Menu Toggle */}
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="md:hidden text-muted-foreground hover:text-foreground transition-colors"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              aria-label={isMenuOpen ? "Close Menu" : "Open Menu"}
+            >
+              {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </Button>
           </div>
-          
-          {/* Mobile menu button */}
-          <motion.button 
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            className="lg:hidden p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            aria-label="Toggle menu"
-          >
-            {isMenuOpen ? (
-              <X className="h-5 w-5 sm:h-6 sm:w-6 text-gray-700 dark:text-gray-300" />
-            ) : (
-              <Menu className="h-5 w-5 sm:h-6 sm:w-6 text-gray-700 dark:text-gray-300" />
-            )}
-          </motion.button>
         </div>
-      </div>
-      
-      {/* Mobile Navigation */}
+      </header>
+
+      {/* Mobile Navigation Menu */}
       <AnimatePresence>
         {isMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "100vh" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3 }}
-            className="fixed inset-0 top-[calc(4.5rem-1px)] lg:hidden bg-white dark:bg-gray-900 z-40 overflow-y-auto"
+            initial="closed"
+            animate="open"
+            exit="closed"
+            variants={mobileMenuVariants}
+            transition={{ type: "tween", duration: 0.25 }}
+            className="fixed inset-0 top-[57px] bg-background/95 backdrop-blur-lg md:hidden z-40"
           >
-            <div className="container py-4 sm:py-6 flex flex-col">
-              {/* Mobile Search */}
-              <form onSubmit={handleSearchSubmit} className="mb-4 sm:mb-6 relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="Search tutorials, projects..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 sm:py-3 rounded-lg border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                />
-              </form>
-              
-              {/* Mobile Nav Links */}
-              <div className="space-y-1 sm:space-y-2">
-                {navigationItems.map((item) => (
-                  <div key={item.name} className="rounded-lg overflow-hidden">
-                    {item.submenu ? (
-                      <div className="mb-2">
-                        <button
-                          className={`w-full px-4 py-2 sm:py-3 flex items-center justify-between rounded-lg ${
-                            activeSubmenu === item.name 
-                              ? "bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400" 
-                              : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
-                          }`}
-                          onClick={() => handleToggleSubmenu(item.name)}
+            <div className="h-full overflow-y-auto pb-20">
+              {/* Mobile user info and login */}
+              <div className="p-4 border-b">
+                {isLoggedIn ? (
+                  <div className="flex items-center gap-3">
+                    <Avatar className="h-10 w-10">
+                      <AvatarImage src="/images/avatars/user.jpg" alt="User" />
+                      <AvatarFallback>U</AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <p className="font-medium">User Name</p>
+                      <p className="text-sm text-muted-foreground">user@example.com</p>
+                      <div className="flex mt-2 gap-2">
+                        <Button variant="outline" size="sm" asChild className="h-8 text-xs">
+                          <Link href="/profile">Profile</Link>
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="h-8 text-xs text-destructive border-destructive"
+                          onClick={handleLogout}
                         >
-                          <span className="font-medium">{item.name}</span>
-                          <ChevronDown 
-                            size={16} 
-                            className={`transition-transform duration-300 ${
-                              activeSubmenu === item.name ? 'rotate-180' : ''
-                            }`} 
-                          />
-                        </button>
-                        
-                        <AnimatePresence>
-                          {activeSubmenu === item.name && (
-                            <motion.div
-                              initial={{ opacity: 0, height: 0 }}
-                              animate={{ opacity: 1, height: 'auto' }}
-                              exit={{ opacity: 0, height: 0 }}
-                              transition={{ duration: 0.3 }}
-                              className="pl-4 mt-1 border-l-2 border-indigo-200 dark:border-indigo-800 ml-4 space-y-1"
-                            >
-                              {item.submenu.map((subitem) => (
-                                <Link 
-                                  key={subitem.name}
-                                  href={subitem.href}
-                                  className="block px-4 py-2 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                                  onClick={() => setIsMenuOpen(false)}
-                                >
-                                  {subitem.name}
-                                </Link>
-                              ))}
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
+                          Logout
+                        </Button>
                       </div>
-                    ) : (
-                      <Link 
-                        href={item.href} 
-                        className={`block px-4 py-2 sm:py-3 rounded-lg transition-colors ${
-                          pathname === item.href 
-                            ? "bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400" 
-                            : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
-                        }`}
-                        onClick={() => setIsMenuOpen(false)}
-                      >
-                        <span className="font-medium">{item.name}</span>
-                      </Link>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex flex-col gap-2">
+                    <p className="text-sm text-muted-foreground mb-1">Get the most out of EduCode</p>
+                    <div className="grid grid-cols-2 gap-2">
+                      <Button className="w-full" onClick={handleLogin}>
+                        <span>Log In</span>
+                      </Button>
+                      <Button variant="outline" asChild>
+                        <Link href="/auth/signup">Sign Up</Link>
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Mobile navigation links */}
+              <nav className="flex flex-col py-6 px-4 space-y-6">
+                {navigationItems.map((item) => (
+                  <div key={item.name} className="space-y-2">
+                    <Link 
+                      href={item.href}
+                      className={cn(
+                        "flex items-center text-lg font-medium",
+                        pathname === item.href || pathname.startsWith(item.href + '/') 
+                          ? "text-primary" 
+                          : "text-foreground"
+                      )}
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      {item.icon && <span className="mr-2">{item.icon}</span>}
+                      {item.name}
+                    </Link>
+                    
+                    {item.submenu && (
+                      <div className="pl-6 border-l border-muted space-y-3 pt-2">
+                        {item.submenu.map((subItem) => (
+                          <Link
+                            key={subItem.name}
+                            href={subItem.href}
+                            className="flex items-center text-muted-foreground hover:text-foreground"
+                            onClick={() => setIsMenuOpen(false)}
+                          >
+                            {subItem.icon && <span className="mr-2">{subItem.icon}</span>}
+                            {subItem.name}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                    
+                    {item.description && (
+                      <p className="text-sm text-muted-foreground">{item.description}</p>
                     )}
                   </div>
                 ))}
-              </div>
+              </nav>
               
-              {/* Mobile Auth Buttons */}
-              <div className="mt-6 pt-4 sm:pt-6 border-t border-gray-200 dark:border-gray-800 grid grid-cols-2 gap-3 sm:gap-4">
-                <Button variant="outline" asChild className="w-full text-gray-700 dark:text-gray-300">
-                  <Link href="/auth/login" onClick={() => setIsMenuOpen(false)}>
-                    Log in
-                  </Link>
-                </Button>
-                <Button asChild className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 dark:from-indigo-500 dark:to-purple-500 text-white border-0">
-                  <Link href="/auth/signup" onClick={() => setIsMenuOpen(false)}>
-                    Sign up
-                  </Link>
-                </Button>
-              </div>
-              
-              {/* Mobile Secondary Links */}
-              <div className="mt-6 sm:mt-8 flex flex-wrap items-center justify-between text-xs sm:text-sm text-gray-600 dark:text-gray-400 gap-y-2">
-                <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
-                  <Github size={16} />
-                  <span>GitHub</span>
-                </a>
-                <Link href="/contact" onClick={() => setIsMenuOpen(false)}>Contact Us</Link>
-                <Link href="/privacy" onClick={() => setIsMenuOpen(false)}>Privacy</Link>
-                <Link href="/terms" onClick={() => setIsMenuOpen(false)}>Terms</Link>
+              {/* Mobile footer links */}
+              <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-lg border-t p-2">
+                <div className="flex items-center justify-around">
+                  <Button variant="ghost" size="sm" asChild className="flex-col h-auto py-2 px-3 gap-1">
+                    <Link href="https://github.com" target="_blank" rel="noopener noreferrer">
+                      <Github className="h-5 w-5" />
+                      <span className="text-[10px]">GitHub</span>
+                    </Link>
+                  </Button>
+                  <Button variant="ghost" size="sm" asChild className="flex-col h-auto py-2 px-3 gap-1">
+                    <Link href="/help">
+                      <HelpCircle className="h-5 w-5" />
+                      <span className="text-[10px]">Help</span>
+                    </Link>
+                  </Button>
+                  <Button variant="ghost" size="sm" asChild className="flex-col h-auto py-2 px-3 gap-1">
+                    <Link href="/settings">
+                      <Settings className="h-5 w-5" />
+                      <span className="text-[10px]">Settings</span>
+                    </Link>
+                  </Button>
+                  <Button variant="ghost" size="sm" asChild className="flex-col h-auto py-2 px-3 gap-1">
+                    <Link href="/terms">
+                      <ShieldCheck className="h-5 w-5" />
+                      <span className="text-[10px]">Terms</span>
+                    </Link>
+                  </Button>
+                </div>
               </div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.header>
+
+      {/* Keyboard shortcut helper tooltip */}
+      <div className="fixed bottom-4 right-4 hidden md:block opacity-0 transition-opacity group-hover:opacity-100">
+        <div className="text-xs text-muted-foreground bg-background p-2 rounded-lg shadow-md border">
+          Press <kbd className="px-1.5 py-0.5 bg-muted rounded text-xs font-mono">⌘K</kbd> to search
+        </div>
+      </div>
+    </>
   );
 }

@@ -11,12 +11,12 @@ import { Play, Save } from "lucide-react";
 import { toast } from "@/components/ui/use-toast";
 import { Editor } from "@monaco-editor/react";
 import { IDEHeader } from "@/components/ide/header";
-import type { ExecutionResult, SupportedLanguage, FileTreeItem, Tab, EditorState } from "@/types/ide";
+import type { Tab, EditorState, FileNode } from "@/types/ide";
 
 export default function IDEPage() {
   const [state, setState] = useState<EditorState>({
     files: [],
-    selectedFileId: null,
+    selectedFileId: undefined,
     tabs: [],
     isRunning: false,
     output: "",
@@ -26,7 +26,8 @@ export default function IDEPage() {
 
   const activeTab = state.tabs.find(tab => tab.isActive);
 
-  const handleFileSelect = useCallback((fileId: string) => {
+  const handleFileSelect = useCallback((file: FileNode) => {
+    const fileId = file.id;
     // Check if the file is already open in a tab
     const existingTab = state.tabs.find(tab => tab.fileId === fileId);
     if (existingTab) {
@@ -174,7 +175,7 @@ export default function IDEPage() {
               <FileTree
                 files={state.files}
                 selectedFileId={state.selectedFileId}
-                onSelect={handleFileSelect}
+                onFileSelect={handleFileSelect}
               />
             </div>
           </ResizablePanel>
@@ -190,7 +191,10 @@ export default function IDEPage() {
                         "px-3 py-1 rounded-md text-sm",
                         tab.isActive ? "bg-primary text-primary-foreground" : "hover:bg-muted"
                       )}
-                      onClick={() => handleFileSelect(tab.fileId)}
+                      onClick={() => {
+                        const file = state.files.find(f => f.id === tab.fileId);
+                        if (file) handleFileSelect(file);
+                      }}
                     >
                       {tab.name}
                       {tab.isDirty && "*"}

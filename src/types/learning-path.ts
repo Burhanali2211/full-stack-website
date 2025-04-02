@@ -1,3 +1,5 @@
+import { LearningPath as TutorialLearningPath } from './tutorial';
+
 export interface LearningPathStep {
   id: string;
   title: string;
@@ -7,7 +9,8 @@ export interface LearningPathStep {
   requiredSteps?: string[]; // IDs of steps that must be completed first
 }
 
-export interface LearningPath {
+// For backward compatibility
+export interface LearningPathLegacy {
   id: string;
   title: string;
   description: string;
@@ -15,4 +18,7 @@ export interface LearningPath {
   tags: string[];
   steps: LearningPathStep[];
   estimatedHours: number;
-} 
+}
+
+// Re-export the new LearningPath interface
+export type LearningPath = TutorialLearningPath; 

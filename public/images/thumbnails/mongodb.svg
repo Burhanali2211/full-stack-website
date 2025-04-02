@@ -1,0 +1,13 @@
+<svg width="600" height="400" viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="600" height="400" fill="#001E2B"/>
+  
+  <!-- MongoDB Logo -->
+  <path d="M300 120c0 0-20 80-20 120s20 80 20 80c0 0 20-40 20-80s-20-120-20-120z" fill="#13AA52"/>
+  <path d="M300 320v-200" stroke="#13AA52" stroke-width="8" fill="none"/>
+  <path d="M300 320l-15-15" stroke="#13AA52" stroke-width="8" fill="none"/>
+  <path d="M300 320l15-15" stroke="#13AA52" stroke-width="8" fill="none"/>
+  
+  <!-- Tutorial Label -->
+  <text x="300" y="80" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="white" text-anchor="middle">MongoDB Aggregation</text>
+</svg> 

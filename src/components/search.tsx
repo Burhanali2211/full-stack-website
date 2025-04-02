@@ -6,12 +6,12 @@ import { Search as SearchIcon, X, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-interface SearchResult {
-  type: "tutorial" | "blog" | "project";
+type SearchResultType = {
+  type: "blog" | "project";
   title: string;
   description: string;
   url: string;
-}
+};
 
 interface SearchProps {
   isOpen: boolean;
@@ -20,7 +20,7 @@ interface SearchProps {
 
 export default function Search({ isOpen, onClose }: SearchProps) {
   const [query, setQuery] = useState("");
-  const [results, setResults] = useState<SearchResult[]>([]);
+  const [results, setResults] = useState<SearchResultType[]>([]);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [isLoading, setIsLoading] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
@@ -130,7 +130,7 @@ export default function Search({ isOpen, onClose }: SearchProps) {
                     setSelectedIndex(-1);
                   }}
                   onKeyDown={handleKeyDown}
-                  placeholder="Search tutorials, blog posts, and projects..."
+                  placeholder="Search projects and blog posts..."
                   className="flex-1 bg-transparent px-3 py-4 text-sm outline-none placeholder:text-muted-foreground"
                 />
                 {isLoading ? (

@@ -1,0 +1,16 @@
+<svg width="600" height="400" viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="600" height="400" fill="#171E26"/>
+  
+  <!-- GraphQL Logo -->
+  <polygon points="300,80 375,120 375,280 300,320 225,280 225,120" fill="none" stroke="#E535AB" stroke-width="10"/>
+  <circle cx="300" cy="80" r="10" fill="#E535AB"/>
+  <circle cx="375" cy="120" r="10" fill="#E535AB"/>
+  <circle cx="375" cy="280" r="10" fill="#E535AB"/>
+  <circle cx="300" cy="320" r="10" fill="#E535AB"/>
+  <circle cx="225" cy="280" r="10" fill="#E535AB"/>
+  <circle cx="225" cy="120" r="10" fill="#E535AB"/>
+  
+  <!-- Tutorial Label -->
+  <text x="300" y="40" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="white" text-anchor="middle">GraphQL API Mastery</text>
+</svg> 

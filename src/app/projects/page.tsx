@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Search, Code2, GitBranch, Star, Eye } from "lucide-react";
+import { Search, Code2, GitBranch, Star, Eye, Video } from "lucide-react";
 import Link from "next/link";
 import MainLayout from "@/components/main-layout";
 import { Input } from "@/components/ui/input";
@@ -13,28 +13,53 @@ import { cn } from "@/lib/utils";
 // Sample projects data
 const projects = [
   {
-    id: "1",
-    title: "React Task Manager",
-    description: "A full-stack task management application built with React, Node.js, and MongoDB",
-    technologies: ["React", "Node.js", "MongoDB", "Express"],
-    difficulty: "intermediate",
-    stars: 245,
-    forks: 68,
-    watchers: 156,
-    image: "/images/projects/task-manager.jpg",
+    id: "web-game",
+    title: "Number Guessing Game",
+    description: "An interactive web game built with React and TypeScript, demonstrating state management, user input handling, and modern UI design principles.",
+    technologies: ["React", "TypeScript", "Tailwind CSS", "Next.js"],
+    difficulty: "beginner",
+    stars: 125,
+    forks: 32,
+    watchers: 78,
+    image: "/images/projects/web-game.jpg",
+    hasVideo: true,
   },
   {
-    id: "2",
-    title: "Python Data Analysis Tool",
-    description: "A data analysis tool built with Python, Pandas, and Matplotlib",
-    technologies: ["Python", "Pandas", "Matplotlib", "NumPy"],
-    difficulty: "advanced",
+    id: "python-converter",
+    title: "Python File Converter",
+    description: "A versatile tool for converting files between different formats, built with Python and a modern UI.",
+    technologies: ["Python", "PyQt6", "PyInstaller", "PyPDF2"],
+    difficulty: "intermediate",
     stars: 189,
     forks: 45,
     watchers: 98,
-    image: "/images/projects/data-analysis.jpg",
+    image: "/images/projects/python-converter.jpg",
+    hasVideo: true,
   },
-  // Add more projects as needed
+  {
+    id: "file-converter",
+    title: "Web-Based File Converter",
+    description: "A modern file converter application built with Next.js and React, featuring a drag-and-drop interface and real-time conversion status.",
+    technologies: ["Next.js", "React", "TypeScript", "Tailwind CSS"],
+    difficulty: "intermediate",
+    stars: 173,
+    forks: 52,
+    watchers: 116,
+    image: "/images/projects/file-converter.jpg",
+    hasVideo: true,
+  },
+  {
+    id: "api-dashboard",
+    title: "GitHub API Dashboard",
+    description: "A real-time dashboard that visualizes GitHub repository data using the GitHub REST API. Built with Next.js and TypeScript.",
+    technologies: ["Next.js", "TypeScript", "GitHub API", "Tailwind CSS"],
+    difficulty: "advanced",
+    stars: 245,
+    forks: 68,
+    watchers: 156,
+    image: "/images/projects/api-dashboard.jpg",
+    hasVideo: true,
+  },
 ];
 
 // Project categories and difficulty levels
@@ -45,6 +70,7 @@ export default function ProjectsPage() {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedDifficulty, setSelectedDifficulty] = useState("All Levels");
   const [searchQuery, setSearchQuery] = useState("");
+  const [showVideoOnly, setShowVideoOnly] = useState(false);
 
   const filteredProjects = projects.filter((project) => {
     const matchesDifficulty = selectedDifficulty === "All Levels" || 
@@ -52,7 +78,8 @@ export default function ProjectsPage() {
     const matchesSearch = project.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       project.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
       project.technologies.some(tech => tech.toLowerCase().includes(searchQuery.toLowerCase()));
-    return matchesDifficulty && matchesSearch;
+    const matchesVideo = !showVideoOnly || project.hasVideo;
+    return matchesDifficulty && matchesSearch && matchesVideo;
   });
 
   return (
@@ -115,6 +142,18 @@ export default function ProjectsPage() {
                 </button>
               ))}
             </div>
+            <button
+              onClick={() => setShowVideoOnly(!showVideoOnly)}
+              className={cn(
+                "px-4 py-2 rounded-full text-sm transition-all flex items-center gap-2",
+                showVideoOnly
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-muted hover:bg-muted/80"
+              )}
+            >
+              <Video className="h-4 w-4" />
+              Video Tutorials
+            </button>
           </div>
         </div>
 
@@ -165,6 +204,11 @@ export default function ProjectsPage() {
                         <div className="flex items-center gap-2">
                           <Code2 className="h-4 w-4 text-primary" />
                           <span className="text-sm font-medium">View Project</span>
+                          {project.hasVideo && (
+                            <div className="ml-2 flex items-center text-green-500" title="Includes video tutorial">
+                              <Video className="h-3.5 w-3.5" />
+                            </div>
+                          )}
                         </div>
                         <Badge
                           className={cn(

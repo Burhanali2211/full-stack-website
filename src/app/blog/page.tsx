@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, Calendar, Clock, ArrowRight, Filter } from "lucide-react";
 import Link from "next/link";
-import Image from "next/image";
 import MainLayout from "@/components/main-layout";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";

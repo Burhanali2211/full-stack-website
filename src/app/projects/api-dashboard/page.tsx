@@ -6,7 +6,7 @@ import ProjectLayout from "@/components/project-layout";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Github, Star, GitFork, Users } from "lucide-react";
+import { Star, GitFork, Users } from "lucide-react";
 
 interface Repository {
   name: string;
@@ -25,7 +25,7 @@ export default function ApiDashboardProject() {
   useEffect(() => {
     const fetchRepos = async () => {
       try {
-        const response = await fetch("https://api.github.com/users/yourusername/repos");
+        const response = await fetch("https://api.github.com/users/Burhanali2211/repos");
         if (!response.ok) throw new Error("Failed to fetch repositories");
         const data = await response.json();
         setRepos(data);
@@ -43,6 +43,7 @@ export default function ApiDashboardProject() {
     <ProjectLayout
       title="GitHub API Dashboard"
       description="A real-time dashboard that visualizes GitHub repository data using the GitHub REST API. Built with Next.js and TypeScript, featuring a modern UI and live data updates."
+      videoId="Z9FQCmAM4sk"
     >
       <div className="space-y-8">
         {/* Project Overview */}

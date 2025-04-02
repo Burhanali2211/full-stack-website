@@ -1,3 +1,4 @@
-export * from './featured-projects';
+export * from './projects';
+export * from './testimonials';
 export * from './features';
-export * from './testimonials'; 
+export * from './featured-projects'; 

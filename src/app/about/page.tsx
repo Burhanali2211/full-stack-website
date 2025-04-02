@@ -1,3 +1,4 @@
+import { defaultViewport } from '@/app/metadata';
 import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -8,6 +9,8 @@ export const metadata: Metadata = {
   title: "About - Educational Platform",
   description: "Learn about our mission to make programming education accessible to everyone",
 };
+
+export const viewport = defaultViewport;
 
 const teamMembers = [
   {
@@ -47,7 +50,7 @@ export default function AboutPage() {
             Our Mission
           </h1>
           <p className="text-xl text-muted-foreground">
-            We're building the most accessible and effective coding education platform for everyone, regardless of their background or prior experience.
+            We&apos;re building the most accessible and effective coding education platform for everyone, regardless of their background or prior experience.
           </p>
         </section>
 
@@ -140,7 +143,7 @@ export default function AboutPage() {
         <section className="text-center py-12 px-6 rounded-2xl bg-muted max-w-4xl mx-auto">
           <h2 className="text-3xl font-bold mb-4">Join Our Community</h2>
           <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Whether you're just starting out or looking to advance your skills, our platform has something for everyone.
+            Whether you&apos;re just starting out or looking to advance your skills, our platform has something for everyone.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild size="lg">

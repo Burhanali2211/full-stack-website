@@ -27,34 +27,36 @@ interface CodeRunnerResponse {
 interface CodeRunnerRequest {
   code: string;
   language: string;
-  input?: string;
 }
 
 export async function POST(req: Request): Promise<NextResponse<CodeRunnerResponse>> {
   try {
-    const { code, language, input = "" }: CodeRunnerRequest = await req.json();
+    const { code, language }: CodeRunnerRequest = await req.json();
 
     // Basic input validation
     if (!code || typeof code !== 'string') {
-      return NextResponse.json(
-        { error: 'Invalid code provided' },
-        { status: 400 }
-      );
+      return NextResponse.json({
+        output: "",
+        error: 'Invalid code provided',
+        exitCode: 1
+      });
     }
 
     if (!language || typeof language !== 'string') {
-      return NextResponse.json(
-        { error: 'Invalid language provided' },
-        { status: 400 }
-      );
+      return NextResponse.json({
+        output: "",
+        error: 'Invalid language provided',
+        exitCode: 1
+      });
     }
 
     // Currently only supporting JavaScript
     if (language.toLowerCase() !== 'javascript') {
-      return NextResponse.json(
-        { error: 'Only JavaScript is currently supported' },
-        { status: 400 }
-      );
+      return NextResponse.json({
+        output: "",
+        error: 'Only JavaScript is currently supported',
+        exitCode: 1
+      });
     }
 
     // Capture console output
@@ -71,14 +73,14 @@ export async function POST(req: Request): Promise<NextResponse<CodeRunnerRespons
     };
 
     // Add safe globals to context
-    for (const global of SAFE_GLOBALS) {
+    Array.from(SAFE_GLOBALS).forEach(global => {
       const value = (globalThis as any)[global];
       if (typeof value === 'function') {
         context[global] = value.bind(undefined);
       } else {
         context[global] = value;
       }
-    }
+    });
 
     // Wrap code in a function to provide limited scope
     const wrappedCode = `

@@ -46,6 +46,7 @@ export default function ContactForm() {
       document.addEventListener('input', handler);
       return () => document.removeEventListener('input', handler);
     }
+    return () => {}; // Return empty cleanup function when isSuccess is false
   }, [isSuccess]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

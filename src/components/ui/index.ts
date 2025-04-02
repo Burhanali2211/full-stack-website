@@ -5,6 +5,8 @@ export * from "./button";
 export * from "./card";
 export * from "./scroll-area";
 export * from "./tabs";
+export * from "./breadcrumb";
+export * from "./separator";
 
 // Interactive components
 export * from "./dialog";

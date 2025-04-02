@@ -4,24 +4,13 @@ import { serialize } from 'next-mdx-remote/serialize';
 
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import { CodePlayground } from './code-playground';
-import { TutorialQuiz } from './tutorial-quiz';
+import CodePlayground from './code-playground';
+import { CodeEditor } from './code-editor';
 import { Suspense } from 'react';
 
 const components = {
   pre: ({ children }: { children: React.ReactNode }) => <div className="not-prose">{children}</div>,
-  code: ({ children, className }: { children: string; className?: string }) => {
-    const language = className?.replace('language-', '') || 'typescript';
-    return (
-      <SyntaxHighlighter
-        language={language}
-        style={atomDark}
-        className="rounded-lg !bg-gray-900 !p-4 my-4"
-      >
-        {children}
-      </SyntaxHighlighter>
-    );
-  },
+  code: CodeEditor,
   h1: ({ children }: { children: React.ReactNode }) => (
     <h1 className="text-4xl font-bold mt-8 mb-4">{children}</h1>
   ),
@@ -54,7 +43,6 @@ const components = {
     </blockquote>
   ),
   CodePlayground,
-  TutorialQuiz,
 };
 
 interface MarkdownRendererProps {

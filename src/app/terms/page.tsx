@@ -1,3 +1,4 @@
+import { defaultViewport } from '@/app/metadata';
 import { Metadata } from "next";
 import { ScrollIndicator } from "@/components/ui/scroll-indicator";
 
@@ -5,6 +6,8 @@ export const metadata: Metadata = {
   title: "Terms of Service - Educational Platform",
   description: "Terms and conditions for using the Educational Platform",
 };
+
+export const viewport = defaultViewport;
 
 export default function TermsPage() {
   return (

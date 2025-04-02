@@ -1,46 +1,23 @@
 {
   "version": 2,
-  "buildCommand": "npm run build",
-  "installCommand": "npm install",
-  "framework": "nextjs",
-  "regions": ["iad1"],
-  "images": {
-    "sizes": [256, 512, 1024, 2048],
-    "domains": ["educational-platform.vercel.app"],
-    "minimumCacheTTL": 3600
-  },
-  "headers": [
+  "builds": [
     {
-      "source": "/fonts/(.*)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
-        }
-      ]
-    },
-    {
-      "source": "/images/(.*)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=2592000, stale-while-revalidate=86400"
-        }
-      ]
-    },
-    {
-      "source": "/(.*).ico",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=2592000, stale-while-revalidate=86400"
-        }
-      ]
+      "src": "package.json",
+      "use": "@vercel/next"
     }
   ],
-  "env": {
-    "NEXT_PUBLIC_BASE_URL": "https://educational-platform.vercel.app",
-    "NEXT_PUBLIC_ENABLE_ANALYTICS": "true",
-    "NEXT_PUBLIC_ENABLE_SEARCH": "true"
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
+    }
+  ],
+  "images": {
+    "sizes": [16, 32, 48, 64, 96, 128, 256, 384],
+    "domains": [],
+    "remotePatterns": []
+  },
+  "github": {
+    "silent": true
   }
-} 
+}

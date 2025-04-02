@@ -8,35 +8,27 @@ import Link from "next/link";
 // Enhanced responses with step-by-step guidance
 const responses = {
   about: {
-    text: "This is an educational platform designed to help you learn programming and web development. We offer tutorials, projects, and interactive learning resources.",
-    suggestions: ["Tell me about tutorials", "Show me projects", "How do I get started?"],
+    text: "This is an educational platform designed to help you learn programming and web development. We offer projects and interactive learning resources.",
+    suggestions: ["Show me projects", "How do I get started?", "Join community"],
   },
   projects: {
-    text: "We have several exciting projects available:\n1. Python File Converter\n2. Next.js Educational Platform\n3. React Native Learning App\n\nWhich project interests you?",
-    suggestions: ["Python File Converter", "Educational Platform", "Learning App"],
+    text: "Our projects cover various topics including:\n- Python Programming\n- Web Development with Next.js\n- Building Applications\n\nWould you like to start a project?",
+    suggestions: ["Start Python project", "Build with Next.js", "View all projects"],
   },
-  tutorials: {
-    text: "Our tutorials cover various topics including:\n- Python Programming\n- Web Development with Next.js\n- Debugging Applications\n\nWould you like to start a tutorial?",
-    suggestions: ["Start Python tutorial", "Learn Next.js", "Debug Python apps"],
+  "python project": {
+    text: "Great choice! Let's start with Python. Here's what we'll cover:\n1. Project setup\n2. Implementation\n3. Testing and deployment\n\nReady to begin?",
+    suggestions: ["Start coding", "Show prerequisites", "View other projects"],
   },
-  "python tutorial": {
-    text: "Great choice! Let's start with Python. Here's what we'll cover:\n1. Basic Python concepts\n2. File handling\n3. Building applications\n\nReady to begin Step 1?",
-    suggestions: ["Start Step 1", "Show prerequisites", "Skip to projects"],
-  },
-  "step 1": {
-    text: "Step 1: Python Basics\n\nLet's start with fundamental Python concepts:\n- Variables and data types\n- Control structures\n- Functions\n\nWould you like to see an example?",
-    suggestions: ["Show example", "Next step", "Try in playground"],
-  },
-  example: {
-    text: "Here's a simple Python example:\n```python\ndef greet(name):\n    return f'Hello, {name}!'\n\nresult = greet('Developer')\nprint(result)\n```\nWant to try it in our Code Playground?",
-    suggestions: ["Open playground", "Next example", "Continue tutorial"],
+  "coding": {
+    text: "Let's write some code! Here's a starter template:\n```python\ndef main():\n    print('Hello, Developer!')\n\nif __name__ == '__main__':\n    main()\n```\nWant to try it in our Code Playground?",
+    suggestions: ["Open playground", "Get help", "View documentation"],
   },
   playground: {
     text: "I've opened the Code Playground for you! Try modifying the code and click 'Run' to see the results. Need help with anything specific?",
-    suggestions: ["How to run code", "Show me tips", "Next lesson"],
+    suggestions: ["How to run code", "Show me tips", "View examples"],
   },
   debug: {
-    text: "Let's learn about debugging in Python:\n1. Using print statements\n2. Python debugger (pdb)\n3. VS Code debugging\n\nWhich method would you like to explore?",
+    text: "Let's debug your code:\n1. Using print statements\n2. Python debugger (pdb)\n3. VS Code debugging\n\nWhich method would you like to explore?",
     suggestions: ["Print debugging", "Use pdb", "VS Code tools"],
   },
   contact: {
@@ -44,8 +36,8 @@ const responses = {
     suggestions: ["Open contact form", "Visit GitHub", "Join community"],
   },
   default: {
-    text: "I'm here to help you learn! You can:\n1. Start a tutorial\n2. Try our projects\n3. Practice coding\n\nWhat would you like to do?",
-    suggestions: ["Show tutorials", "Browse projects", "Open playground"],
+    text: "I'm here to help you learn! You can:\n1. Start a project\n2. Join the community\n3. Practice coding\n\nWhat would you like to do?",
+    suggestions: ["Browse projects", "Join community", "Open playground"],
   },
 };
 
@@ -53,12 +45,12 @@ const responses = {
 const findResponse = (message: string) => {
   const normalizedMessage = message.toLowerCase();
   
-  if (normalizedMessage.includes("step 1") || normalizedMessage.includes("start step")) {
-    return responses["step 1"];
+  if (normalizedMessage.includes("python") && normalizedMessage.includes("project")) {
+    return responses["python project"];
   }
   
-  if (normalizedMessage.includes("example") || normalizedMessage.includes("show me")) {
-    return responses.example;
+  if (normalizedMessage.includes("coding") || normalizedMessage.includes("code")) {
+    return responses.coding;
   }
   
   if (normalizedMessage.includes("playground") || normalizedMessage.includes("try it")) {
@@ -69,20 +61,12 @@ const findResponse = (message: string) => {
     return responses.debug;
   }
   
-  if (normalizedMessage.includes("python") && normalizedMessage.includes("tutorial")) {
-    return responses["python tutorial"];
-  }
-  
   if (normalizedMessage.includes("about") || normalizedMessage.includes("what is") || normalizedMessage.includes("purpose")) {
     return responses.about;
   }
   
   if (normalizedMessage.includes("project") || normalizedMessage.includes("portfolio")) {
     return responses.projects;
-  }
-  
-  if (normalizedMessage.includes("tutorial") || normalizedMessage.includes("learn") || normalizedMessage.includes("how to")) {
-    return responses.tutorials;
   }
   
   if (normalizedMessage.includes("contact") || normalizedMessage.includes("help") || normalizedMessage.includes("support")) {

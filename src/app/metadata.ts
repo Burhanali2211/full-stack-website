@@ -1,8 +1,15 @@
-import { Metadata } from 'next';
+import { Metadata, Viewport } from 'next';
 
 // Configure the base URL based on environment
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 
   (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
+
+// Default viewport settings for the site
+export const defaultViewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+};
 
 // Default metadata for the site
 export const defaultMetadata: Metadata = {
@@ -44,11 +51,6 @@ export const defaultMetadata: Metadata = {
     description: "Interactive educational platform for learning programming, web development, and other tech skills with hands-on tutorials and projects.",
     images: [`${baseUrl}/images/twitter-image.jpg`],
     creator: "@eduplatform"
-  },
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 1,
   },
   icons: {
     icon: [

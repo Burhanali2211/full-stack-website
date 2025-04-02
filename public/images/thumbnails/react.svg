@@ -1,0 +1,13 @@
+<svg width="600" height="400" viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="600" height="400" fill="#20232A"/>
+  
+  <!-- React Logo -->
+  <ellipse cx="300" cy="200" rx="120" ry="45" fill="none" stroke="#61DAFB" stroke-width="12"/>
+  <ellipse cx="300" cy="200" rx="120" ry="45" fill="none" stroke="#61DAFB" stroke-width="12" transform="rotate(60 300 200)"/>
+  <ellipse cx="300" cy="200" rx="120" ry="45" fill="none" stroke="#61DAFB" stroke-width="12" transform="rotate(-60 300 200)"/>
+  <circle cx="300" cy="200" r="22" fill="#61DAFB"/>
+  
+  <!-- Tutorial Label -->
+  <text x="300" y="80" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="white" text-anchor="middle">React Fundamentals</text>
+</svg> 
