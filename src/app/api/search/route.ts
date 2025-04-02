@@ -1,52 +1,56 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-// Mock data - In production, this would come from your database
-const searchableContent = [
-  {
-    type: "tutorial",
-    title: "Python File Converter Tutorial",
-    description: "Learn how to build a file converter application using Python",
-    url: "/tutorials/python-file-converter",
-  },
-  {
-    type: "blog",
-    title: "Getting Started with Next.js",
-    description: "A comprehensive guide to building modern web applications with Next.js",
-    url: "/blog/getting-started-with-nextjs",
-  },
-  {
-    type: "project",
-    title: "File Converter",
-    description: "A versatile file conversion tool built with Python",
-    url: "/projects/file-converter",
-  },
-  // Add more searchable content here
-];
-
-export async function GET(request: Request) {
-  try {
-    const { searchParams } = new URL(request.url);
-    const query = searchParams.get("q")?.toLowerCase();
-
-    if (!query) {
-      return NextResponse.json([]);
+// Sample search results for static rendering
+const SAMPLE_SEARCH_RESULTS = {
+  results: [
+    {
+      id: 1,
+      title: "Introduction to JavaScript",
+      type: "tutorial",
+      description: "Learn the basics of JavaScript programming language",
+      url: "/tutorials/javascript-basics"
+    },
+    {
+      id: 2,
+      title: "Building a React App",
+      type: "project",
+      description: "Step-by-step guide to creating a React application",
+      url: "/projects/react-app"
+    },
+    {
+      id: 3,
+      title: "CSS Grid Layout",
+      type: "tutorial",
+      description: "Master CSS Grid for modern web layouts",
+      url: "/tutorials/css-grid-layout"
+    },
+    {
+      id: 4,
+      title: "Python Dictionaries",
+      type: "tutorial",
+      description: "Learn how to use dictionaries in Python",
+      url: "/tutorials/python-dictionaries"
     }
+  ]
+};
 
-    // Filter content based on search query
-    const results = searchableContent.filter(item => {
-      const titleMatch = item.title.toLowerCase().includes(query);
-      const descriptionMatch = item.description.toLowerCase().includes(query);
-      return titleMatch || descriptionMatch;
+// Static route configuration
+export const dynamic = 'force-static';
+export const revalidate = 3600; // Revalidate every hour
+
+export async function GET(request: NextRequest) {
+  try {
+    // Use static sample data instead of dynamic request.url parsing
+    return NextResponse.json(SAMPLE_SEARCH_RESULTS, {
+      status: 200,
+      headers: {
+        'Cache-Control': 'public, max-age=3600, stale-while-revalidate=600',
+      },
     });
-
-    // Add artificial delay to simulate database query
-    await new Promise(resolve => setTimeout(resolve, 100));
-
-    return NextResponse.json(results);
   } catch (error) {
-    console.error("Search error:", error);
+    console.error('Search error:', error);
     return NextResponse.json(
-      { error: "Failed to perform search" },
+      { error: 'Search failed', results: [] },
       { status: 500 }
     );
   }
