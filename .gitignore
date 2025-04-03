@@ -37,3 +37,4 @@ next-env.d.ts
 # Prisma
 /prisma/
 /.prisma/
+.vercel

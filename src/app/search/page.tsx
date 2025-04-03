@@ -255,18 +255,16 @@ function SearchContent() {
 // Fallback loading state for Suspense
 function SearchLoading() {
   return (
-    <div className="container py-16 max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="pt-16 pb-8">
-        <h1 className="text-3xl font-bold mb-4">Search Results</h1>
-        <div className="flex justify-center items-center py-16">
-          <Loader2 className="h-10 w-10 animate-spin text-indigo-500" />
-        </div>
+    <div className="container max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-36">
+      <div className="flex justify-center items-center">
+        <Loader2 className="h-12 w-12 animate-spin text-indigo-500" />
       </div>
     </div>
   );
 }
 
 export default function SearchPage() {
+  // Wrap in Suspense boundary to handle useSearchParams()
   return (
     <Suspense fallback={<SearchLoading />}>
       <SearchContent />

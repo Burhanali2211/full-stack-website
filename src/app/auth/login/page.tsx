@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
@@ -20,7 +20,8 @@ const loginSchema = z.object({
 
 type LoginFormData = z.infer<typeof loginSchema>;
 
-export default function LoginPage() {
+// Client component that uses useSearchParams hook
+function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callbackUrl') || '/dashboard';
@@ -169,8 +170,17 @@ export default function LoginPage() {
               </Link>
             </div>
           </CardFooter>
-          </form>
+        </form>
       </Card>
     </div>
+  );
+}
+
+// Main page component with Suspense boundary
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="flex min-h-screen items-center justify-center">Loading...</div>}>
+      <LoginForm />
+    </Suspense>
   );
 } 
