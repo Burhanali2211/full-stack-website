@@ -1,6 +1,26 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Expose safe public environment variables
+  // These will be available to client components
+  env: {
+    NEXT_PUBLIC_APP_URL: process.env.NEXTAUTH_URL || 'http://localhost:3000',
+  },
   reactStrictMode: true,
+  swcMinify: true,
+  // Configure image domains for external images
+  images: {
+    domains: ['images.unsplash.com', 'via.placeholder.com', 'avatars.githubusercontent.com'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'img.icons8.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+      },
+    ],
+  },
   typescript: {
     // Ignore TypeScript errors during build to allow deployment
     ignoreBuildErrors: true,
@@ -9,40 +29,26 @@ const nextConfig = {
     // Ignore ESLint errors during build to allow deployment
     ignoreDuringBuilds: true,
   },
-  // Configure image domains for external images
-  images: {
-    domains: ['i.pravatar.cc', 'fympthlvnsxixrimlvxl.supabase.co'],
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'i.pravatar.cc',
-        port: '',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: '*.supabase.co',
-        port: '',
-        pathname: '/**',
-      },
-    ],
-  },
-  // Skip type checking to speed up the build process
-  swcMinify: true,
-  // Disable source maps in production to reduce bundle size
-  productionBrowserSourceMaps: false,
   webpack: (config, { isServer }) => {
-    // This will completely exclude Prisma from the build
-    if (isServer) {
-      config.externals = [...config.externals, '@prisma/client', 'prisma'];
-    }
+    // Fix highlight.js and react-syntax-highlighter compatibility
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      // Remove the problematic highlight.js alias
+    };
+    
+    // Client-side polyfills for browser compatibility
+    config.resolve.fallback = {
+      fs: false,
+      net: false,
+      tls: false,
+      crypto: require.resolve('crypto-browserify'),
+      stream: require.resolve('stream-browserify'),
+      process: require.resolve('process/browser'),
+    };
     
     return config;
   },
-  experimental: {
-    // This forces fallback for packages that might cause issues
-    fallbackNodePolyfills: false,
-  }
+  outputFileTracing: true
 };
 
 module.exports = nextConfig;

@@ -1,92 +1,82 @@
 import { NextResponse } from "next/server";
-import bcrypt from "bcryptjs";
-// Skip importing Supabase admin during build to prevent errors
-// import { supabaseAdmin } from "@/lib/supabase-admin";
+import { hash } from "bcrypt";
+import { PrismaClient } from "@prisma/client";
+import { z } from "zod";
 
-// In production, this route will use the properly configured Supabase client
+const prisma = new PrismaClient();
+
+// Define schema for input validation
+const userSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  email: z.string().email("Invalid email address"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
+});
+
 export async function POST(req: Request) {
   try {
-    const { email, password, name } = await req.json();
-
-    if (!email || !password) {
+    const body = await req.json();
+    
+    // Validate input
+    const validation = userSchema.safeParse(body);
+    if (!validation.success) {
       return NextResponse.json(
-        { message: "Missing required fields" },
+        { error: "Invalid input", details: validation.error.flatten() },
         { status: 400 }
       );
     }
 
-    // For the time being, just return a successful response
-    // This prevents build failures and will be replaced with the actual implementation
-    // once environment variables are properly set in Vercel
-    return NextResponse.json(
-      {
-        message: "Registration endpoint working. Configure your environment variables for full functionality.",
-        user: {
-          id: "placeholder-id",
-          email,
-          name: name || email.split('@')[0]
-        },
-      },
-      { status: 201 }
-    );
-    
-    /* 
-    // The actual implementation, commented out for successful builds
-    // Will be restored after deployment with proper env variables
+    const { name, email, password } = validation.data;
 
     // Check if user already exists
-    const { data: existingUser } = await supabaseAdmin
-      .from('users')
-      .select()
-      .eq('email', email)
-      .single();
+    const existingUser = await prisma.user.findUnique({
+      where: {
+        email,
+      },
+    });
 
     if (existingUser) {
       return NextResponse.json(
-        { message: "User already exists" },
-        { status: 400 }
+        { error: "User with this email already exists" },
+        { status: 409 }
       );
     }
 
     // Hash password
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await hash(password, 12);
 
     // Create user
-    const { data: user, error } = await supabaseAdmin
-      .from('users')
-      .insert([
-        {
-          email,
-          password: hashedPassword,
-          name: name || email.split('@')[0],
-        }
-      ])
-      .select()
-      .single();
-
-    if (error) {
-      console.error("Error creating user:", error);
-      return NextResponse.json(
-        { message: "Error creating user" },
-        { status: 500 }
-      );
-    }
-
-    // Remove password from response
-    const { password: hashedPasswordToRemove, ...userWithoutPassword } = user;
-
-    return NextResponse.json(
-      {
-        message: "User created successfully",
-        user: userWithoutPassword,
+    const user = await prisma.user.create({
+      data: {
+        name,
+        email,
+        password: hashedPassword,
+        role: "user",
+        // Create a progress record for the new user
+        progress: {
+          create: {
+            points: 0,
+            streak: 0,
+          },
+        },
       },
-      { status: 201 }
-    );
-    */
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+      },
+    });
+
+    return NextResponse.json({ 
+      success: true, 
+      message: "User created successfully", 
+      user 
+    }, { status: 201 });
+
   } catch (error) {
     console.error("Registration error:", error);
     return NextResponse.json(
-      { message: "Error processing registration" },
+      { error: "An error occurred during registration" },
       { status: 500 }
     );
   }

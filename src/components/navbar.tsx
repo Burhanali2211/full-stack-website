@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 import { ThemeToggle } from "./theme-toggle";
+import { useSession } from "next-auth/react";
+import { UserNav } from "./user-nav";
 import { 
   Menu, X, ChevronDown, Search, Bell, 
   Home, BookOpen, FileText, Layers, 
@@ -132,10 +134,13 @@ export default function Navbar() {
   const [filteredResults, setFilteredResults] = useState<typeof searchData>([]);
   const [showSearchResults, setShowSearchResults] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // Simulated login state
   const [notifications, setNotifications] = useState(notificationsData);
   const [searchFocused, setSearchFocused] = useState(false);
   const [currentCategory, setCurrentCategory] = useState<string | null>(null);
+  
+  // Use NextAuth session instead of simulated login
+  const { data: session } = useSession();
+  const isLoggedIn = !!session;
   
   const searchInputRef = useRef<HTMLInputElement>(null);
   const searchResultsRef = useRef<HTMLDivElement>(null);
@@ -168,15 +173,6 @@ export default function Navbar() {
   // Handle mounting
   useEffect(() => {
     setMounted(true);
-    
-    // Simulate checking if user is logged in (would be from auth context in a real app)
-    const checkLoginStatus = async () => {
-      // This would be replaced with actual auth check
-      const userLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-      setIsLoggedIn(userLoggedIn);
-    };
-    
-    checkLoginStatus();
   }, []);
 
   // Handle search functionality
@@ -272,7 +268,6 @@ export default function Navbar() {
   const handleLogout = () => {
     // This would call your auth logout in a real app
     localStorage.removeItem('isLoggedIn');
-    setIsLoggedIn(false);
   };
 
   // Handle user login (redirect to login page)
@@ -602,98 +597,31 @@ export default function Navbar() {
               </a>
             </Button>
 
-            {/* User Account / Login Button */}
-            {isLoggedIn ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm" className="gap-2 hidden sm:flex">
-                    <Avatar className="h-6 w-6">
-                      <AvatarImage src="/images/avatars/user.jpg" alt="User" />
-                      <AvatarFallback>U</AvatarFallback>
-                    </Avatar>
-                    <span className="hidden md:inline">Account</span>
+            {/* User menu */}
+            <div className="flex items-center gap-2">
+              {isLoggedIn ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon" className="relative rounded-full">
+                      <UserNav />
+                    </Button>
+                  </DropdownMenuTrigger>
+                </DropdownMenu>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <Button variant="ghost" size="sm" asChild>
+                    <Link href="/auth/login">
+                      Log in
+                    </Link>
                   </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56">
-                  <div className="flex items-center gap-2 p-2">
-                    <Avatar className="h-8 w-8">
-                      <AvatarImage src="/images/avatars/user.jpg" alt="User" />
-                      <AvatarFallback>U</AvatarFallback>
-                    </Avatar>
-                    <div className="flex flex-col">
-                      <span className="text-sm font-medium">User Name</span>
-                      <span className="text-xs text-muted-foreground">user@example.com</span>
-                    </div>
-                  </div>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem asChild>
-                    <Link href="/dashboard" className="flex items-center gap-2 cursor-pointer">
-                      <LayoutDashboard className="h-4 w-4" />
-                      <span>Dashboard</span>
+                  <Button size="sm" asChild>
+                    <Link href="/auth/signup">
+                      Sign Up
                     </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link href="/profile" className="flex items-center gap-2 cursor-pointer">
-                      <User className="h-4 w-4" />
-                      <span>Profile</span>
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link href="/bookmarks" className="flex items-center gap-2 cursor-pointer">
-                      <BookmarkIcon className="h-4 w-4" />
-                      <span>Bookmarks</span>
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem asChild>
-                    <Link href="/settings" className="flex items-center gap-2 cursor-pointer">
-                      <Settings className="h-4 w-4" />
-                      <span>Settings</span>
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link href="/help" className="flex items-center gap-2 cursor-pointer">
-                      <HelpCircle className="h-4 w-4" />
-                      <span>Help & Support</span>
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem 
-                    className="text-destructive focus:text-destructive cursor-pointer" 
-                    onClick={handleLogout}
-                  >
-                    <LogOut className="h-4 w-4 mr-2" />
-                    <span>Logout</span>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            ) : (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button size="sm" className="hidden sm:flex gap-1 items-center">
-                    <span>Log In</span>
-                    <ChevronDown className="ml-1 h-3.5 w-3.5" />
                   </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56">
-                  <DropdownMenuItem onClick={handleLogin}>
-                    <User className="h-4 w-4 mr-2" />
-                    <span>Login with Email</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={handlePhoneLogin}>
-                    <MessageCircle className="h-4 w-4 mr-2" />
-                    <span>Login with Phone</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem asChild>
-                    <Link href="/auth/signup" className="flex items-center">
-                      <UserPlus className="h-4 w-4 mr-2" />
-                      <span>Sign Up</span>
-                    </Link>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            )}
+                </div>
+              )}
+            </div>
 
             {/* Mobile Menu Toggle */}
             <Button 
@@ -806,34 +734,28 @@ export default function Navbar() {
                 ))}
               </nav>
               
-              {/* Mobile footer links */}
-              <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-lg border-t p-2">
-                <div className="flex items-center justify-around">
-                  <Button variant="ghost" size="sm" asChild className="flex-col h-auto py-2 px-3 gap-1">
-                    <Link href="https://github.com" target="_blank" rel="noopener noreferrer">
-                      <Github className="h-5 w-5" />
-                      <span className="text-[10px]">GitHub</span>
-                    </Link>
-                  </Button>
-                  <Button variant="ghost" size="sm" asChild className="flex-col h-auto py-2 px-3 gap-1">
-                    <Link href="/help">
-                      <HelpCircle className="h-5 w-5" />
-                      <span className="text-[10px]">Help</span>
-                    </Link>
-                  </Button>
-                  <Button variant="ghost" size="sm" asChild className="flex-col h-auto py-2 px-3 gap-1">
-                    <Link href="/settings">
-                      <Settings className="h-5 w-5" />
-                      <span className="text-[10px]">Settings</span>
-                    </Link>
-                  </Button>
-                  <Button variant="ghost" size="sm" asChild className="flex-col h-auto py-2 px-3 gap-1">
-                    <Link href="/terms">
-                      <ShieldCheck className="h-5 w-5" />
-                      <span className="text-[10px]">Terms</span>
-                    </Link>
-                  </Button>
-                </div>
+              {/* User Account section in mobile menu */}
+              <div className="mt-auto pt-4 border-t">
+                {isLoggedIn ? (
+                  <div className="px-3 mb-4">
+                    <UserNav />
+                  </div>
+                ) : (
+                  <div className="space-y-3 p-3">
+                    <Button className="w-full justify-start" variant="outline" asChild>
+                      <Link href="/auth/login" onClick={() => setIsMenuOpen(false)}>
+                        <User className="mr-2 h-4 w-4" />
+                        Sign In
+                      </Link>
+                    </Button>
+                    <Button className="w-full justify-start" asChild>
+                      <Link href="/auth/signup" onClick={() => setIsMenuOpen(false)}>
+                        <UserPlus className="mr-2 h-4 w-4" />
+                        Sign Up
+                      </Link>
+                    </Button>
+                  </div>
+                )}
               </div>
             </div>
           </motion.div>
