@@ -25,15 +25,15 @@ yarn-error.log*
 # local env files
 .env*.local
 .env
-.env.development
-.env.production
-.env.test
 
 # vercel
 .vercel
+.turbo
 
 # typescript
 *.tsbuildinfo
 next-env.d.ts
 
-.vercel
+# Prisma
+/prisma/
+/.prisma/

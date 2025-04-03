@@ -1,23 +1,11 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/next"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/$1"
-    }
-  ],
-  "images": {
-    "sizes": [16, 32, 48, 64, 96, 128, 256, 384],
-    "domains": [],
-    "remotePatterns": []
-  },
-  "github": {
-    "silent": true
+  "framework": "nextjs",
+  "buildCommand": "npm run build",
+  "ignoreCommand": "echo 'Skipping check'",
+  "outputDirectory": ".next",
+  "env": {
+    "PRISMA_GENERATE_SKIP": "true",
+    "NODE_ENV": "production"
   }
 }
