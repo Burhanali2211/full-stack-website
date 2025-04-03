@@ -10,7 +10,7 @@ import {
   ArrowRight, Command, Github, ExternalLink,
   User, LogOut, Settings, HelpCircle, 
   BookmarkIcon, LayoutDashboard, ShieldCheck,
-  AlertCircle, Star
+  AlertCircle, Star, UserPlus
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "./ui/button";
@@ -275,10 +275,14 @@ export default function Navbar() {
     setIsLoggedIn(false);
   };
 
-  // Handle user login (for demo purposes)
+  // Handle user login (redirect to login page)
   const handleLogin = () => {
-    localStorage.setItem('isLoggedIn', 'true');
-    setIsLoggedIn(true);
+    router.push('/auth/login');
+  };
+
+  // Handle phone login
+  const handlePhoneLogin = () => {
+    router.push('/auth/phone');
   };
 
   // Count unread notifications
@@ -664,10 +668,31 @@ export default function Navbar() {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Button size="sm" className="hidden sm:flex gap-1 items-center" onClick={handleLogin}>
-                <span>Log In</span>
-                <ExternalLink className="ml-1 h-3.5 w-3.5" />
-              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button size="sm" className="hidden sm:flex gap-1 items-center">
+                    <span>Log In</span>
+                    <ChevronDown className="ml-1 h-3.5 w-3.5" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuItem onClick={handleLogin}>
+                    <User className="h-4 w-4 mr-2" />
+                    <span>Login with Email</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handlePhoneLogin}>
+                    <MessageCircle className="h-4 w-4 mr-2" />
+                    <span>Login with Phone</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link href="/auth/signup" className="flex items-center">
+                      <UserPlus className="h-4 w-4 mr-2" />
+                      <span>Sign Up</span>
+                    </Link>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             )}
 
             {/* Mobile Menu Toggle */}
@@ -725,11 +750,14 @@ export default function Navbar() {
                 ) : (
                   <div className="flex flex-col gap-2">
                     <p className="text-sm text-muted-foreground mb-1">Get the most out of EduCode</p>
-                    <div className="grid grid-cols-2 gap-2">
+                    <div className="grid grid-cols-1 gap-2">
                       <Button className="w-full" onClick={handleLogin}>
-                        <span>Log In</span>
+                        <span>Log In with Email</span>
                       </Button>
-                      <Button variant="outline" asChild>
+                      <Button variant="outline" onClick={handlePhoneLogin}>
+                        <span>Log In with Phone</span>
+                      </Button>
+                      <Button variant="secondary" asChild>
                         <Link href="/auth/signup">Sign Up</Link>
                       </Button>
                     </div>
