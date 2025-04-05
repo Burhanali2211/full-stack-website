@@ -134,31 +134,31 @@ const TutorialGrid = ({ tutorials }: TutorialGridProps) => {
   };
 
   // Common grid class with responsive columns and updated spacing
-  const gridClass = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-[15px] md:gap-[25px]";
+  const gridClass = "grid grid-cols-1 xs:grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-6 md:gap-7 lg:gap-8";
 
   return (
-    <div className="space-y-12 md:space-y-16">
+    <div className="space-y-12 md:space-y-20">
       {/* Beginner section */}
-      <section ref={beginnerRef} className="px-2 sm:px-0" id="all-beginners">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 gap-2">
+      <section ref={beginnerRef} className="px-2 sm:px-4 md:px-6 lg:px-0" id="all-beginners">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 sm:mb-8 gap-2">
           <motion.div
             className="flex items-center gap-3"
             initial="hidden"
             animate={beginnerInView ? "visible" : "hidden"}
             variants={sectionVariants}
           >
-            <div className="p-2 rounded-full bg-green-100 dark:bg-green-900/20">
-              <Users className="h-5 w-5 text-green-600 dark:text-green-400" />
+            <div className="p-1.5 sm:p-2 rounded-full bg-green-100 dark:bg-green-900/20">
+              <Users className="h-4 w-4 sm:h-5 sm:w-5 text-green-600 dark:text-green-400" />
             </div>
             <div>
-              <h2 className="text-xl md:text-2xl font-bold">Beginner Friendly</h2>
-              <p className="text-sm md:text-base text-muted-foreground">Perfect starting points for newcomers</p>
+              <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-foreground dark:text-gray-100">Beginner Friendly</h2>
+              <p className="text-xs sm:text-sm md:text-base text-muted-foreground dark:text-gray-400">Perfect starting points for newcomers</p>
             </div>
           </motion.div>
-          <Button variant="ghost" className="gap-1 self-start sm:self-center" asChild>
-            <a href="#all-beginners" className="text-sm">
+          <Button variant="ghost" className="gap-1 self-start sm:self-center hover:bg-transparent hover:text-primary dark:hover:text-primary-light" asChild>
+            <a href="#all-beginners" className="text-xs sm:text-sm">
               View all
-              <ArrowRight className="h-4 w-4" />
+              <ArrowRight className="h-3 w-3 sm:h-4 sm:w-4 transition-transform duration-300 group-hover:translate-x-0.5" />
             </a>
           </Button>
         </div>
@@ -184,11 +184,11 @@ const TutorialGrid = ({ tutorials }: TutorialGridProps) => {
         </motion.div>
       </section>
       
-      <Separator className="my-8 md:my-10" />
+      <Separator className="my-8 md:my-10 lg:my-12 opacity-70 dark:opacity-50" />
       
       {/* Intermediate section */}
-      <section ref={intermediateRef} className="px-2 sm:px-0" id="all-intermediate">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 gap-2">
+      <section ref={intermediateRef} className="px-2 sm:px-4 md:px-6 lg:px-0" id="all-intermediate">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 sm:mb-8 gap-2">
           <motion.div
             className="flex items-center gap-3"
             initial="hidden"
@@ -199,14 +199,14 @@ const TutorialGrid = ({ tutorials }: TutorialGridProps) => {
               <Sparkles className="h-5 w-5 text-blue-600 dark:text-blue-400" />
             </div>
             <div>
-              <h2 className="text-xl md:text-2xl font-bold">Level Up Your Skills</h2>
-              <p className="text-sm md:text-base text-muted-foreground">Expand your knowledge with these intermediate tutorials</p>
+              <h2 className="text-xl md:text-2xl font-bold text-foreground dark:text-gray-100">Level Up Your Skills</h2>
+              <p className="text-sm md:text-base text-muted-foreground dark:text-gray-400">Expand your knowledge with these intermediate tutorials</p>
             </div>
           </motion.div>
-          <Button variant="ghost" className="gap-1 self-start sm:self-center" asChild>
+          <Button variant="ghost" className="gap-1 self-start sm:self-center hover:bg-transparent hover:text-primary dark:hover:text-primary-light" asChild>
             <a href="#all-intermediate" className="text-sm">
               View all
-              <ArrowRight className="h-4 w-4" />
+              <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" />
             </a>
           </Button>
         </div>
@@ -232,11 +232,11 @@ const TutorialGrid = ({ tutorials }: TutorialGridProps) => {
         </motion.div>
       </section>
       
-      <Separator className="my-8 md:my-10" />
+      <Separator className="my-8 md:my-10 lg:my-12 opacity-70 dark:opacity-50" />
       
       {/* Advanced section */}
-      <section ref={advancedRef} className="px-2 sm:px-0" id="all-advanced">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 gap-2">
+      <section ref={advancedRef} className="px-2 sm:px-4 md:px-6 lg:px-0" id="all-advanced">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 sm:mb-8 gap-2">
           <motion.div
             className="flex items-center gap-3"
             initial="hidden"
@@ -247,14 +247,14 @@ const TutorialGrid = ({ tutorials }: TutorialGridProps) => {
               <Trophy className="h-5 w-5 text-purple-600 dark:text-purple-400" />
             </div>
             <div>
-              <h2 className="text-xl md:text-2xl font-bold">Master Advanced Concepts</h2>
-              <p className="text-sm md:text-base text-muted-foreground">Challenge yourself with expert-level content</p>
+              <h2 className="text-xl md:text-2xl font-bold text-foreground dark:text-gray-100">Master Advanced Concepts</h2>
+              <p className="text-sm md:text-base text-muted-foreground dark:text-gray-400">Challenge yourself with expert-level content</p>
             </div>
           </motion.div>
-          <Button variant="ghost" className="gap-1 self-start sm:self-center" asChild>
+          <Button variant="ghost" className="gap-1 self-start sm:self-center hover:bg-transparent hover:text-primary dark:hover:text-primary-light" asChild>
             <a href="#all-advanced" className="text-sm">
               View all
-              <ArrowRight className="h-4 w-4" />
+              <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" />
             </a>
           </Button>
         </div>
@@ -280,11 +280,11 @@ const TutorialGrid = ({ tutorials }: TutorialGridProps) => {
         </motion.div>
       </section>
       
-      <Separator className="my-8 md:my-10" />
+      <Separator className="my-8 md:my-10 lg:my-12 opacity-70 dark:opacity-50" />
       
       {/* All tutorials */}
-      <section className="px-2 sm:px-0">
-        <h2 className="text-xl md:text-2xl font-bold mb-4 md:mb-6">All Tutorials</h2>
+      <section className="px-2 sm:px-4 md:px-6 lg:px-0">
+        <h2 className="text-xl md:text-2xl font-bold mb-6 md:mb-8 text-foreground dark:text-gray-100">All Tutorials</h2>
         <motion.div 
           className={gridClass}
           variants={containerVariants}
@@ -303,31 +303,55 @@ const TutorialGrid = ({ tutorials }: TutorialGridProps) => {
               isLiked={likedTutorials.includes(tutorial.id)}
             />
           ))}
+          
+          {/* Loading skeleton for next items that would load */}
+          {loading && Array.from({ length: 4 }).map((_, i) => (
+            <div key={`skeleton-${i}`} className="h-full rounded-xl overflow-hidden border border-border/30 dark:border-gray-700/30 bg-card/60 dark:bg-gray-800/40 animate-pulse">
+              <div className="aspect-video bg-muted/70 dark:bg-gray-700/50"></div>
+              <div className="p-5 space-y-3">
+                <div className="h-5 bg-muted/70 dark:bg-gray-700/50 rounded w-3/4"></div>
+                <div className="h-4 bg-muted/70 dark:bg-gray-700/50 rounded w-full"></div>
+                <div className="h-4 bg-muted/70 dark:bg-gray-700/50 rounded w-5/6"></div>
+                <div className="h-10 bg-muted/70 dark:bg-gray-700/50 rounded"></div>
+                <div className="flex gap-2 pt-2">
+                  <div className="h-8 w-8 bg-muted/70 dark:bg-gray-700/50 rounded-full"></div>
+                  <div className="flex-1 space-y-2">
+                    <div className="h-3 bg-muted/70 dark:bg-gray-700/50 rounded w-1/2"></div>
+                    <div className="h-3 bg-muted/70 dark:bg-gray-700/50 rounded w-1/3"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
         </motion.div>
         
-        {visibleTutorials < tutorials.length && (
-          <div className="flex justify-center mt-8 md:mt-10">
+        {visibleTutorials < tutorials.length && !loading && (
+          <div className="flex justify-center mt-10 md:mt-12">
             <Button 
               onClick={handleLoadMore} 
               variant="outline" 
               size="lg"
-              className="gap-2"
-              disabled={loading}
+              className="gap-2 hover:bg-indigo-50 dark:hover:bg-indigo-950/30 hover:text-indigo-600 dark:hover:text-indigo-400 hover:border-indigo-300 dark:hover:border-indigo-800 transition-colors"
             >
-              {loading ? (
-                <>
-                  <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  Loading...
-                </>
-              ) : (
-                <>
-                  Load More Tutorials
-                  <ArrowRight className="h-4 w-4" />
-                </>
-              )}
+              Load More Tutorials
+              <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" />
+            </Button>
+          </div>
+        )}
+        
+        {loading && (
+          <div className="flex justify-center mt-10 md:mt-12">
+            <Button 
+              variant="outline" 
+              size="lg"
+              className="gap-2"
+              disabled
+            >
+              <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              Loading...
             </Button>
           </div>
         )}

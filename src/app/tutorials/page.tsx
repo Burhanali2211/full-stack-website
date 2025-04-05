@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 export const viewport = defaultViewport;
 
 // Tutorial data
-const tutorials: Tutorial[] = [
+export const tutorials: Tutorial[] = [
   {
     id: "python-dictionaries",
     title: "Working with Python Dictionaries",
@@ -32,7 +32,8 @@ const tutorials: Tutorial[] = [
     rating: 4.8,
     likes: 215,
     comments: 28,
-    popularity: 87
+    popularity: 87,
+    videoId: "daefaLgNkw0"  // Sample Python dictionary video
   },
   {
     id: "react-hooks",
@@ -51,7 +52,8 @@ const tutorials: Tutorial[] = [
     rating: 4.9,
     likes: 342,
     comments: 45,
-    popularity: 93
+    popularity: 93,
+    videoId: "TNhaISOUy6Q"  // React hooks video
   },
   {
     id: "javascript-fundamentals",
@@ -71,7 +73,8 @@ const tutorials: Tutorial[] = [
     rating: 4.7,
     likes: 198,
     comments: 32,
-    popularity: 85
+    popularity: 85,
+    videoId: "hdI2bqOjy3c"  // JavaScript fundamentals video
   },
   {
     id: "html-css-basics",
@@ -90,7 +93,8 @@ const tutorials: Tutorial[] = [
     rating: 4.6,
     likes: 156,
     comments: 24,
-    popularity: 82
+    popularity: 82,
+    videoId: "mJgBOIoGihA"  // HTML/CSS basics video
   },
   {
     id: "typescript-basics",
@@ -110,7 +114,8 @@ const tutorials: Tutorial[] = [
     rating: 4.5,
     likes: 134,
     comments: 22,
-    popularity: 78
+    popularity: 78,
+    videoId: "BCg4U1FzODs"  // TypeScript basics video
   },
   {
     id: "nextjs-fundamentals",
@@ -129,7 +134,8 @@ const tutorials: Tutorial[] = [
     rating: 4.9,
     likes: 287,
     comments: 39,
-    popularity: 91
+    popularity: 91,
+    videoId: "KjY94sAKLlw"  // Next.js video
   },
   {
     id: "nextjs-full-stack",
@@ -149,6 +155,7 @@ const tutorials: Tutorial[] = [
     likes: 475,
     comments: 82,
     popularity: 92,
+    videoId: "W4UhNo3HAMw"  // Next.js full-stack video
   },
   {
     id: "python-advanced-patterns",
@@ -168,6 +175,7 @@ const tutorials: Tutorial[] = [
     likes: 340,
     comments: 58,
     popularity: 84,
+    videoId: "qJJInG2chS4"  // Python design patterns video
   },
 ];
 
