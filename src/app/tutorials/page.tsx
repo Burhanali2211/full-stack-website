@@ -4,6 +4,7 @@ import TutorialsClient from "@/components/tutorials/TutorialsClient";
 import { Tutorial } from "@/components/tutorials/TutorialCard";
 import { defaultViewport } from "@/app/metadata";
 import { getAvatarUrl } from "@/lib/utils";
+import { AuthProvider } from '@/contexts/auth-context';
 
 export const metadata: Metadata = {
   title: "Programming Tutorials | Learn to Code",
@@ -182,10 +183,12 @@ export const tutorials: Tutorial[] = [
 export default function TutorialsPage() {
   return (
     <main className="min-h-screen px-4 sm:px-6 lg:px-8 py-8">
-      <TutorialHero />
-      <div className="mt-12">
-        <TutorialsClient tutorials={tutorials} />
-      </div>
+      <AuthProvider>
+        <TutorialHero />
+        <div className="mt-12">
+          <TutorialsClient tutorials={tutorials} />
+        </div>
+      </AuthProvider>
     </main>
   );
 }

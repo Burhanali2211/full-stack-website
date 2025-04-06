@@ -382,8 +382,8 @@ const TutorialCard: FC<TutorialCardProps> = ({
               closePreview();
             }}
             className="absolute top-4 right-4 z-[150] rounded-full bg-gray-900/70 dark:bg-gray-700/90 text-white p-2 w-10 h-10 flex items-center justify-center hover:bg-gray-900/90 dark:hover:bg-gray-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            aria-label="Close preview"
-          >
+              aria-label="Close preview"
+            >
             <X className="h-5 w-5" />
           </button>
           
@@ -408,7 +408,7 @@ const TutorialCard: FC<TutorialCardProps> = ({
                       <Play className="h-8 w-8 text-white fill-white" />
                     </div>
                     <span className="absolute bottom-6 left-6 text-white text-sm font-medium">Preview available</span>
-                  </div>
+            </div>
                 ) : (
                   <Image 
                     src={thumbnailImage}
@@ -440,14 +440,14 @@ const TutorialCard: FC<TutorialCardProps> = ({
                     level === "intermediate" ? "bg-blue-500/90 hover:bg-blue-500" : 
                     "bg-purple-500/90 hover:bg-purple-500"
                   }`}>
-                    {level.charAt(0).toUpperCase() + level.slice(1)}
-                  </Badge>
+                {level.charAt(0).toUpperCase() + level.slice(1)}
+              </Badge>
                   
                   <div className="flex items-center text-xs gap-1">
                     <Clock className="h-3 w-3" />
                     {duration}
-                  </div>
-                  
+            </div>
+            
                   <div className="flex items-center text-xs gap-1">
                     <Star className="h-3 w-3 text-yellow-400 fill-yellow-400" />
                     {rating.toFixed(1)}
@@ -495,23 +495,23 @@ const TutorialCard: FC<TutorialCardProps> = ({
                     </div>
                   ))}
                 </div>
-              </div>
-              
+            </div>
+            
               {/* Skills you'll gain - improved layout */}
               <div className="mb-4 sm:mb-6">
                 <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-2 sm:mb-3">Skills you'll gain</h3>
                 <div className="flex flex-wrap gap-1.5 sm:gap-2">
                   {tags.map((tag) => (
-                    <span 
-                      key={tag} 
+                  <span
+                    key={tag}
                       className="px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full bg-indigo-100 dark:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 text-[10px] sm:text-xs transition-colors hover:bg-indigo-200 dark:hover:bg-indigo-500/30"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
+                  >
+                    {tag}
+                  </span>
+                ))}
               </div>
-              
+            </div>
+            
               {/* Course stats - more compact on mobile */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4 mb-4 sm:mb-6">
                 <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-2 sm:p-3 text-center">
@@ -565,8 +565,8 @@ const TutorialCard: FC<TutorialCardProps> = ({
                 >
                   <ExternalLink className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-gray-600 dark:text-gray-400" />
                 </button>
-              </div>
-              
+          </div>
+          
               <Button 
                 size="default"
                 className="w-full sm:w-auto bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white shadow-lg hover:shadow-xl focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-all duration-300" 
@@ -868,8 +868,8 @@ const TutorialCard: FC<TutorialCardProps> = ({
         {isMounted && showPreview && (
           <div id="modal-wrapper">
             {ReactDOM.createPortal(
-              <PreviewModal />,
-              document.body
+          <PreviewModal />,
+          document.body
             )}
           </div>
         )}

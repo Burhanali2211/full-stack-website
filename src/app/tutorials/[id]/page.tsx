@@ -112,4 +112,4 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
       <TutorialDetail tutorial={mockTutorial} />
     </main>
   );
-}
+} 

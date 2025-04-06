@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import { useSession, signOut } from 'next-auth/react';
 import { 
   LayoutDashboard, 
   User, 
@@ -10,118 +9,107 @@ import {
   HelpCircle, 
   LogOut 
 } from 'lucide-react';
+import { useAuth } from '@/contexts/auth-context';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export function UserNav() {
-  const { data: session, status } = useSession();
+  const { user, loading, signOut } = useAuth();
   
-  if (status === 'loading') {
+  if (loading) {
     return (
-      <div className="p-4 bg-black text-white rounded-lg">
-        <div className="flex items-center space-x-3 mb-4">
-          <div className="h-10 w-10 rounded-full bg-gray-800 flex items-center justify-center">
-            <span className="text-lg">...</span>
-          </div>
-          <div className="space-y-1">
-            <p className="text-sm font-medium">Loading...</p>
-            <p className="text-xs text-gray-500">Please wait</p>
-          </div>
-        </div>
-      </div>
+      <Avatar className="h-8 w-8">
+        <AvatarFallback className="bg-primary/20">
+          <span className="animate-pulse">...</span>
+        </AvatarFallback>
+      </Avatar>
     );
   }
   
-  if (status === 'unauthenticated') {
+  if (!user) {
     return (
-      <div className="p-4 bg-black text-white rounded-lg">
-        <div className="flex items-center space-x-3 mb-4">
-          <div className="h-10 w-10 rounded-full bg-gray-800 flex items-center justify-center">
-            <span className="text-lg">G</span>
-          </div>
-          <div className="space-y-1">
-            <p className="text-sm font-medium">Guest User</p>
-            <p className="text-xs text-gray-500">Not signed in</p>
-          </div>
-        </div>
-        <nav className="space-y-2">
-          <Link 
-            href="/auth/login" 
-            className="flex items-center text-sm text-blue-400 hover:text-blue-300 py-2 px-3"
-          >
-            <User className="h-4 w-4 mr-2" />
-            Sign In
-          </Link>
-          <Link 
-            href="/auth/signup" 
-            className="flex items-center text-sm text-blue-400 hover:text-blue-300 py-2 px-3"
-          >
-            <User className="h-4 w-4 mr-2" />
-            Sign Up
-          </Link>
-        </nav>
-      </div>
+      <Avatar className="h-8 w-8">
+        <AvatarFallback>G</AvatarFallback>
+      </Avatar>
     );
   }
   
-  const userInitial = session?.user?.name?.charAt(0) || 
-                     session?.user?.email?.charAt(0) || 'U';
+  const userInitial = user?.email?.charAt(0)?.toUpperCase() || 'U';
+  const userName = user.user_metadata?.full_name || user.user_metadata?.name || 'User';
+  const userEmail = user.email || '';
+
+  const handleSignOut = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    try {
+      await signOut();
+      // The signOut function itself handles redirection
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
+  };
 
   return (
-    <div className="p-4 bg-black text-white rounded-lg">
-      <div className="flex items-center space-x-3 mb-4">
-        <div className="h-10 w-10 rounded-full bg-gray-800 flex items-center justify-center">
-          <span className="text-lg">{userInitial}</span>
-        </div>
-        <div className="space-y-1">
-          <p className="text-sm font-medium">{session?.user?.name || 'User Name'}</p>
-          <p className="text-xs text-gray-500">{session?.user?.email || 'user@example.com'}</p>
-        </div>
-      </div>
-      
-      <nav className="space-y-2">
-        <Link 
-          href="/dashboard" 
-          className="flex items-center text-sm text-blue-400 hover:text-blue-300 py-2 px-3"
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Avatar className="h-8 w-8 cursor-pointer border-2 border-transparent hover:border-primary transition-colors">
+          <AvatarImage src="/images/avatars/user.jpg" alt={userName} />
+          <AvatarFallback>{userInitial}</AvatarFallback>
+        </Avatar>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-56">
+        <DropdownMenuLabel className="font-normal">
+          <div className="flex flex-col space-y-1">
+            <p className="text-sm font-medium leading-none">{userName}</p>
+            <p className="text-xs leading-none text-muted-foreground">{userEmail}</p>
+          </div>
+        </DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem asChild>
+          <Link href="/dashboard" className="cursor-pointer">
+            <LayoutDashboard className="mr-2 h-4 w-4" />
+            <span>Dashboard</span>
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link href="/profile" className="cursor-pointer">
+            <User className="mr-2 h-4 w-4" />
+            <span>Profile</span>
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link href="/bookmarks" className="cursor-pointer">
+            <Bookmark className="mr-2 h-4 w-4" />
+            <span>Bookmarks</span>
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link href="/settings" className="cursor-pointer">
+            <Settings className="mr-2 h-4 w-4" />
+            <span>Settings</span>
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link href="/help-support" className="cursor-pointer">
+            <HelpCircle className="mr-2 h-4 w-4" />
+            <span>Help & Support</span>
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem 
+          className="text-red-500 focus:text-red-500 cursor-pointer" 
+          onClick={handleSignOut}
         >
-          <LayoutDashboard className="h-4 w-4 mr-2" />
-          Dashboard
-        </Link>
-        <Link 
-          href="/profile" 
-          className="flex items-center text-sm text-blue-400 hover:text-blue-300 py-2 px-3"
-        >
-          <User className="h-4 w-4 mr-2" />
-          Profile
-        </Link>
-        <Link 
-          href="/bookmarks" 
-          className="flex items-center text-sm text-blue-400 hover:text-blue-300 py-2 px-3"
-        >
-          <Bookmark className="h-4 w-4 mr-2" />
-          Bookmarks
-        </Link>
-        <Link 
-          href="/settings" 
-          className="flex items-center text-sm text-blue-400 hover:text-blue-300 py-2 px-3"
-        >
-          <Settings className="h-4 w-4 mr-2" />
-          Settings
-        </Link>
-        <Link 
-          href="/help" 
-          className="flex items-center text-sm text-blue-400 hover:text-blue-300 py-2 px-3"
-        >
-          <HelpCircle className="h-4 w-4 mr-2" />
-          Help & Support
-        </Link>
-        
-        <button 
-          onClick={() => signOut({ callbackUrl: '/' })}
-          className="flex items-center text-sm text-red-500 hover:text-red-400 w-full text-left py-2 px-3"
-        >
-          <LogOut className="h-4 w-4 mr-2" />
-          Logout
-        </button>
-      </nav>
-    </div>
+          <LogOut className="mr-2 h-4 w-4" />
+          <span>Logout</span>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 } 

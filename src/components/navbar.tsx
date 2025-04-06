@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 import { ThemeToggle } from "./theme-toggle";
-import { useSession } from "next-auth/react";
+import { useAuth } from "@/contexts/auth-context";
 import { UserNav } from "./user-nav";
 import { 
   Menu, X, ChevronDown, Search, Bell, 
@@ -30,6 +30,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "./ui/badge";
+import { supabase } from "@/lib/supabase";
 
 // Define the navigation items for reuse
 const navigationItems = [
@@ -138,9 +139,10 @@ export default function Navbar() {
   const [searchFocused, setSearchFocused] = useState(false);
   const [currentCategory, setCurrentCategory] = useState<string | null>(null);
   
-  // Use NextAuth session instead of simulated login
-  const { data: session } = useSession();
-  const isLoggedIn = !!session;
+  // Use Supabase auth from our context
+  const { user, loading } = useAuth();
+  const [isClient, setIsClient] = useState(false);
+  const isLoggedIn = isClient && !!user;
   
   const searchInputRef = useRef<HTMLInputElement>(null);
   const searchResultsRef = useRef<HTMLDivElement>(null);
@@ -170,8 +172,9 @@ export default function Navbar() {
     setSearchResults(searchData);
   }, []);
 
-  // Handle mounting
+  // Set client-side rendering flag
   useEffect(() => {
+    setIsClient(true);
     setMounted(true);
   }, []);
 
@@ -265,14 +268,23 @@ export default function Navbar() {
   };
 
   // Handle user logout
-  const handleLogout = () => {
-    // This would call your auth logout in a real app
-    localStorage.removeItem('isLoggedIn');
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+      router.push('/');
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
   };
 
   // Handle user login (redirect to login page)
   const handleLogin = () => {
     router.push('/auth/login');
+  };
+
+  // Handle signup (redirect to signup page)
+  const handleSignup = () => {
+    router.push('/auth/signup');
   };
 
   // Handle phone login

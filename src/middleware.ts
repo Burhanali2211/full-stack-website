@@ -1,31 +1,17 @@
-import { getToken } from "next-auth/jwt";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
+/**
+ * DISABLED MIDDLEWARE
+ * All authentication is now handled at the component level
+ */
 export async function middleware(request: NextRequest) {
-  const token = await getToken({ req: request });
-  const isAuthPage = request.nextUrl.pathname.startsWith('/auth');
-
-  if (!token && !isAuthPage) {
-    const url = new URL('/auth/login', request.url);
-    url.searchParams.set('callbackUrl', request.nextUrl.pathname);
-    return NextResponse.redirect(url);
-  }
-
-  if (token && isAuthPage) {
-    return NextResponse.redirect(new URL('/dashboard', request.url));
-  }
-
+  // Simply pass all requests through without any redirection
   return NextResponse.next();
 }
 
-// Configure which routes to run middleware on
+// Set the matcher to empty to effectively disable middleware
+// This prevents any unintended redirects
 export const config = {
-  matcher: [
-    "/dashboard/:path*",
-    "/profile/:path*",
-    "/courses/:path*",
-    "/auth/login",
-    "/auth/signup",
-  ],
-}; 
+  matcher: [],
+};
