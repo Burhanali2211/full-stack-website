@@ -1,9 +1,13 @@
 import { NextResponse } from "next/server";
 import { hash } from "bcrypt";
-import { PrismaClient } from "@prisma/client";
 import { z } from "zod";
+import { createClient } from '@supabase/supabase-js';
 
-const prisma = new PrismaClient();
+// Initialize Supabase client
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
 
 // Define schema for input validation
 const userSchema = z.object({
@@ -28,11 +32,11 @@ export async function POST(req: Request) {
     const { name, email, password } = validation.data;
 
     // Check if user already exists
-    const existingUser = await prisma.user.findUnique({
-      where: {
-        email,
-      },
-    });
+    const { data: existingUser } = await supabase
+      .from('users')
+      .select('id')
+      .eq('email', email)
+      .single();
 
     if (existingUser) {
       return NextResponse.json(
@@ -45,27 +49,42 @@ export async function POST(req: Request) {
     const hashedPassword = await hash(password, 12);
 
     // Create user
-    const user = await prisma.user.create({
-      data: {
-        name,
-        email,
-        password: hashedPassword,
-        role: "user",
-        // Create a progress record for the new user
-        progress: {
-          create: {
-            points: 0,
-            streak: 0,
-          },
-        },
-      },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        role: true,
-      },
-    });
+    const { data: user, error } = await supabase
+      .from('users')
+      .insert([
+        {
+          name,
+          email,
+          password: hashedPassword,
+          role: "user",
+        }
+      ])
+      .select('id, name, email, role')
+      .single();
+
+    if (error) {
+      throw error;
+    }
+
+    // Create progress record for the new user
+    const { error: progressError } = await supabase
+      .from('progress')
+      .insert([
+        {
+          user_id: user.id,
+          points: 0,
+          streak: 0,
+        }
+      ]);
+
+    if (progressError) {
+      // If progress creation fails, we should probably delete the user
+      await supabase
+        .from('users')
+        .delete()
+        .eq('id', user.id);
+      throw progressError;
+    }
 
     return NextResponse.json({ 
       success: true, 
