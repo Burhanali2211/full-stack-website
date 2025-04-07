@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { updateUserProgress, getUserProgress } from "@/lib/supabase-admin";
 import { getSession } from "@/lib/auth";
 
+// Ensure this handler doesn't run during build time
+export const dynamic = 'force-dynamic';
+export const runtime = 'edge';
+
 export async function GET(request: NextRequest) {
   try {
     const session = await getSession();

@@ -176,7 +176,7 @@ export async function executeCode(
       case "javascript":
         // Execute JavaScript in a safe way
         const result = await executeJavaScript(code);
-        return { status: "success", output: result };
+        return result;
 
       case "python":
         return executePython(code);

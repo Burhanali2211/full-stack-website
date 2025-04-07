@@ -86,7 +86,9 @@ export default function IDEPage() {
       const result = await executeCode(
         activeTab.content,
         activeTab.language,
-        ["html", "css"].includes(activeTab.language) ? previewRef : undefined
+        ["html", "css"].includes(activeTab.language) && previewRef.current 
+          ? { current: previewRef.current } 
+          : undefined
       );
 
       setState(prev => ({
