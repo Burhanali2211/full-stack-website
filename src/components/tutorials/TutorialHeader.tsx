@@ -123,16 +123,10 @@ const TutorialHeader: FC<TutorialHeaderProps> = ({
               ))}
             </div>
             
-            <div className="flex items-center gap-3 mb-6">
-              <div className="relative w-10 h-10 rounded-full overflow-hidden">
-                <div 
-                  className="absolute inset-0 bg-cover bg-center"
-                  style={{ backgroundImage: `url(${author.avatar})` }}
-                />
-              </div>
-              <div>
-                <div className="font-medium">{author.name}</div>
-                <div className="text-sm text-muted-foreground">{author.title}</div>
+            <div className="flex items-center gap-2">
+              <div className="flex flex-col">
+                <span className="text-sm font-medium">{author.name}</span>
+                <span className="text-xs text-muted-foreground">{author.title}</span>
               </div>
             </div>
           </div>

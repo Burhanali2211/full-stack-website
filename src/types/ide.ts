@@ -5,18 +5,17 @@ export type FileType = 'file' | 'directory';
 export interface FileNode {
   id: string;
   name: string;
-  type: FileType;
+  type: "file" | "folder";
+  language?: string;
   content?: string;
-  language?: SupportedLanguage;
   children?: FileNode[];
-  parentId?: string;
 }
 
 export interface Tab {
   id: string;
   fileId: string;
   name: string;
-  language: SupportedLanguage;
+  language: string;
   content: string;
   isActive: boolean;
   isDirty: boolean;
@@ -78,7 +77,7 @@ export interface FileTreeItem {
 }
 
 export interface EditorState {
-  files: FileTreeItem[];
+  files: FileNode[];
   selectedFileId?: string;
   tabs: Tab[];
   isRunning: boolean;

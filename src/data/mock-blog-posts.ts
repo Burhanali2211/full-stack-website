@@ -1,5 +1,32 @@
 import { BlogPost } from "@/types/blog";
 
+export interface Author {
+  name: string;
+  title: string;
+}
+
+export type BlogCategory = 
+  | "Technology"
+  | "Programming"
+  | "Web Development"
+  | "Mobile Development"
+  | "Data Science"
+  | "Machine Learning"
+  | "DevOps"
+  | "Cloud Computing"
+  | "Cybersecurity"
+  | "Design"
+  | "Education"
+  | "Career"
+  | "Industry Trends"
+  | "Best Practices"
+  | "Tutorials"
+  | "Case Studies"
+  | "Opinion"
+  | "News"
+  | "Resources"
+  | "Community";
+
 // Mock blog posts data for development
 export const blogPosts: BlogPost[] = [
   {
@@ -89,7 +116,6 @@ As AI capabilities continue to advance, the relationship between developers and 
     author: {
       name: "Alex Chen",
       title: "AI Research Scientist",
-      avatar: "/authors/alex-chen.jpg",
     },
     date: "2024-04-10",
     updatedAt: "2024-04-12",
@@ -256,7 +282,6 @@ The most valuable skill remains adaptability—understanding the core principles
     author: {
       name: "Sarah Johnson",
       title: "Senior Frontend Developer",
-      avatar: "/authors/sarah-johnson.jpg",
     },
     date: "2024-04-08",
     updatedAt: "2024-04-08",
@@ -462,7 +487,6 @@ As you become more comfortable with Kubernetes, explore more advanced topics lik
     author: {
       name: "Mike Zhang",
       title: "DevOps Engineer",
-      avatar: "/authors/mike-zhang.jpg",
     },
     date: "2024-04-05",
     updatedAt: "2024-04-07",
@@ -675,7 +699,6 @@ Remember that machine learning is both an art and a science—theoretical knowle
     author: {
       name: "Dr. Maya Patel",
       title: "Data Scientist",
-      avatar: "/authors/maya-patel.jpg",
     },
     date: "2024-04-01",
     updatedAt: "2024-04-01",
@@ -857,7 +880,6 @@ The most successful mobile apps will be those that leverage these trends while m
     author: {
       name: "James Wilson",
       title: "Mobile App Architect",
-      avatar: "/authors/james-wilson.jpg",
     },
     date: "2024-03-28",
     updatedAt: "2024-03-30",
@@ -996,7 +1018,6 @@ By adopting these practices and staying current with evolving threats, organizat
     author: {
       name: "David Torres",
       title: "Chief Information Security Officer",
-      avatar: "/authors/david-torres.jpg",
     },
     date: "2024-04-06",
     updatedAt: "2024-04-07",
@@ -1188,7 +1209,6 @@ As the field continues to evolve, emphasize modular components that can be repla
     author: {
       name: "Priya Sharma",
       title: "Lead Data Engineer",
-      avatar: "/authors/priya-sharma.jpg",
     },
     date: "2024-04-04",
     updatedAt: "2024-04-05",
@@ -1288,7 +1308,6 @@ When done right, a design system becomes more than just a collection of componen
     author: {
       name: "Elena Rodriguez",
       title: "Design Systems Architect",
-      avatar: "/authors/elena-rodriguez.jpg",
     },
     date: "2024-04-03",
     updatedAt: "2024-04-03",
@@ -1380,7 +1399,6 @@ The journey to cloud-native is incremental—begin by adopting the practices tha
     author: {
       name: "Carlos Mendez",
       title: "Cloud Architecture Consultant",
-      avatar: "/authors/carlos-mendez.jpg",
     },
     date: "2024-03-29",
     updatedAt: "2024-03-31",
@@ -1517,7 +1535,6 @@ By applying these advanced techniques, you can significantly improve the speed a
     author: {
       name: "Thomas Wright",
       title: "Frontend Performance Engineer",
-      avatar: "/authors/thomas-wright.jpg",
     },
     date: "2024-03-25",
     updatedAt: "2024-03-27",
@@ -1611,7 +1628,6 @@ As these technologies mature, the most successful implementations will be those 
     author: {
       name: "Dr. Morgan Lee",
       title: "Education Technology Researcher",
-      avatar: "/authors/morgan-lee.jpg",
     },
     date: "2024-03-22",
     updatedAt: "2024-03-24",
@@ -1715,7 +1731,6 @@ As this discipline evolves, the most successful organizations will be those that
     author: {
       name: "Olivia Green",
       title: "Sustainable Computing Advocate",
-      avatar: "/authors/olivia-green.jpg",
     },
     date: "2024-03-20",
     updatedAt: "2024-03-21",
@@ -1811,7 +1826,6 @@ The quantum computing landscape will continue to evolve rapidly, with increasing
     author: {
       name: "Dr. Richard Feynman",
       title: "Quantum Computing Researcher",
-      avatar: "/authors/richard-feynman.jpg",
     },
     date: "2024-03-18",
     updatedAt: "2024-03-19",

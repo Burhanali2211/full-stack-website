@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+import { blogPosts } from "@/data/mock-blog-posts";
+import { projects } from "@/data/projects";
 
 // Sample search results for static rendering
 const SAMPLE_SEARCH_RESULTS = {
@@ -38,20 +40,51 @@ const SAMPLE_SEARCH_RESULTS = {
 export const dynamic = 'force-static';
 export const revalidate = 3600; // Revalidate every hour
 
-export async function GET(request: NextRequest) {
-  try {
-    // Use static sample data instead of dynamic request.url parsing
-    return NextResponse.json(SAMPLE_SEARCH_RESULTS, {
-      status: 200,
-      headers: {
-        'Cache-Control': 'public, max-age=3600, stale-while-revalidate=600',
-      },
-    });
-  } catch (error) {
-    console.error('Search error:', error);
-    return NextResponse.json(
-      { error: 'Search failed', results: [] },
-      { status: 500 }
-    );
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const query = searchParams.get("q")?.toLowerCase() || "";
+
+  if (!query) {
+    return NextResponse.json([]);
   }
+
+  // Search in blog posts
+  const blogResults = blogPosts
+    .filter(post => 
+      post.title.toLowerCase().includes(query) ||
+      post.description.toLowerCase().includes(query) ||
+      post.content.toLowerCase().includes(query)
+    )
+    .map(post => ({
+      type: "blog" as const,
+      title: post.title,
+      description: post.description,
+      url: `/blog/${post.slug}`,
+    }));
+
+  // Search in projects
+  const projectResults = projects
+    .filter(project =>
+      project.title.toLowerCase().includes(query) ||
+      project.description.toLowerCase().includes(query)
+    )
+    .map(project => ({
+      type: "project" as const,
+      title: project.title,
+      description: project.description,
+      url: `/projects/${project.slug}`,
+    }));
+
+  // Combine and sort results
+  const results = [...blogResults, ...projectResults]
+    .sort((a, b) => {
+      // Prioritize exact matches in titles
+      const aTitleMatch = a.title.toLowerCase() === query;
+      const bTitleMatch = b.title.toLowerCase() === query;
+      if (aTitleMatch && !bTitleMatch) return -1;
+      if (!aTitleMatch && bTitleMatch) return 1;
+      return 0;
+    });
+
+  return NextResponse.json(results);
 } 

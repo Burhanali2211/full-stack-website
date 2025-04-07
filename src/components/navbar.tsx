@@ -1,12 +1,11 @@
 "use client";
 
+import React from "react";
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 import { ThemeToggle } from "./theme-toggle";
-import { useAuth } from "@/contexts/auth-context";
-import { UserNav } from "./user-nav";
 import { 
-  Menu, X, ChevronDown, Search, Bell, 
+  Menu, X, ChevronDown, Search as SearchIcon, Bell, 
   Home, BookOpen, FileText, Layers, 
   Users, LifeBuoy, MessageCircle, Code,
   ArrowRight, Command, Github, ExternalLink,
@@ -30,7 +29,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "./ui/badge";
-import { supabase } from "@/lib/supabase";
+import Search from "./search";
 
 // Define the navigation items for reuse
 const navigationItems = [
@@ -139,15 +138,14 @@ export default function Navbar() {
   const [searchFocused, setSearchFocused] = useState(false);
   const [currentCategory, setCurrentCategory] = useState<string | null>(null);
   
-  // Use Supabase auth from our context
-  const { user, loading } = useAuth();
   const [isClient, setIsClient] = useState(false);
-  const isLoggedIn = isClient && !!user;
   
   const searchInputRef = useRef<HTMLInputElement>(null);
   const searchResultsRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const router = useRouter();
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
+  const userMenuRef = useRef<HTMLDivElement>(null);
 
   // Handle scroll effect with throttling for performance
   useEffect(() => {
@@ -267,29 +265,9 @@ export default function Navbar() {
     );
   };
 
-  // Handle user logout
-  const handleLogout = async () => {
-    try {
-      await supabase.auth.signOut();
-      router.push('/');
-    } catch (error) {
-      console.error('Error signing out:', error);
-    }
-  };
-
-  // Handle user login (redirect to login page)
-  const handleLogin = () => {
-    router.push('/auth/login');
-  };
-
-  // Handle signup (redirect to signup page)
-  const handleSignup = () => {
-    router.push('/auth/signup');
-  };
-
-  // Handle phone login
-  const handlePhoneLogin = () => {
-    router.push('/auth/phone');
+  // Replace auth-related handlers with basic navigation
+  const goToHomePage = () => {
+    router.push('/');
   };
 
   // Count unread notifications
@@ -307,332 +285,236 @@ export default function Navbar() {
   };
 
   return (
-    <>
       <header 
         className={cn(
-          "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-          scrolled ? "py-2 bg-background/90 backdrop-blur-lg shadow-sm border-b" : "py-4"
+        "sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 transition-all duration-200",
+        scrolled && "border-b shadow-sm"
         )}
       >
-        <div className="container flex items-center justify-between">
+      <div className="container px-4 md:px-6">
+        <div className="flex h-16 items-center justify-between">
+          <div className="flex">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 font-bold text-xl text-foreground">
-            <span className="inline-block w-8 h-8 rounded-lg overflow-hidden bg-primary">
-              <Image 
-                src="/images/logo.svg" 
-                alt="Logo" 
-                width={32} 
-                height={32} 
-                className="object-cover"
-                onError={(e) => {
-                  // Fallback if image fails to load
-                  const target = e.target as HTMLElement;
-                  target.innerHTML = "ED";
-                  target.className = "w-full h-full flex items-center justify-center text-primary-foreground";
-                }}
-              />
-            </span>
-            <span className="tracking-tight">EduCode</span>
+            <Link href="/" className="flex items-center space-x-2">
+              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                <Code className="h-5 w-5 text-primary-foreground" />
+              </div>
+              <span className="font-bold text-xl hidden sm:inline-block">EduCode</span>
           </Link>
+          </div>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-1">
+          {/* Desktop navigation */}
+          <nav className="mx-6 flex items-center space-x-4 lg:space-x-6 hidden md:flex">
             {navigationItems.map((item) => (
               <div 
                 key={item.name} 
                 className="relative" 
-                onMouseEnter={() => setHoveredItem(item.name)}
+                onMouseEnter={() => item.submenu && setHoveredItem(item.name)}
                 onMouseLeave={() => setHoveredItem(null)}
               >
                 <Link 
                   href={item.href}
                   className={cn(
-                    "px-3 py-2 rounded-md text-sm font-medium flex items-center gap-1.5 transition-colors",
-                    pathname === item.href || pathname.startsWith(item.href + '/')
-                      ? "text-primary" 
-                      : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
+                    "flex items-center text-sm font-medium transition-colors hover:text-primary",
+                    pathname === item.href
+                      ? "text-foreground"
+                      : "text-muted-foreground"
                   )}
                 >
+                  {item.icon && (
+                    <span className="mr-1">{item.icon}</span>
+                  )}
                   {item.name}
-                  {item.submenu && <ChevronDown className="h-3.5 w-3.5" />}
+                  {item.submenu && (
+                    <ChevronDown className="ml-1 h-3 w-3" />
+                  )}
                 </Link>
 
-                {/* Dropdown for desktop navigation */}
+                {/* Submenu for desktop navigation */}
                 {item.submenu && hoveredItem === item.name && (
-                  <AnimatePresence>
-                    <motion.div 
-                      initial="hidden"
-                      animate="visible"
-                      exit="hidden"
-                      variants={dropdownVariants}
-                      className="absolute top-full left-0 w-56 mt-0.5 p-2 shadow-lg rounded-lg bg-popover/95 backdrop-blur-md border z-50"
-                    >
-                      <div className="p-2 text-xs font-medium text-muted-foreground">
-                        {item.description}
-                      </div>
-                      <div className="py-1">
+                  <div className="absolute left-0 mt-1 w-60 origin-top-left rounded-md bg-card shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
+                    <div className="py-1 grid gap-1 p-2">
                         {item.submenu.map((subItem) => (
                           <Link
                             key={subItem.name}
                             href={subItem.href}
-                            className="flex items-center gap-2 px-3 py-2 text-sm rounded-md text-foreground hover:bg-accent transition-colors"
+                          className="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-muted-foreground hover:bg-accent hover:text-accent-foreground"
                           >
                             {subItem.icon}
-                            <span>{subItem.name}</span>
+                          {subItem.name}
                           </Link>
                         ))}
                       </div>
-                    </motion.div>
-                  </AnimatePresence>
+                  </div>
                 )}
               </div>
             ))}
           </nav>
 
-          {/* Right-side actions */}
-          <div className="flex items-center space-x-2 md:space-x-3">
-            {/* Search */}
-            <div className="relative">
-              <form onSubmit={handleSearchSubmit} className="relative group">
-                <div className="relative">
-                  <Input
+          {/* Right side items */}
+          <div className="flex items-center gap-4">
+            {/* Search Button */}
+            <div className="relative hidden md:flex">
+              <div className="relative md:w-64 lg:w-80">
+                <SearchInput 
                     ref={searchInputRef}
-                    type="text"
-                    placeholder={searchFocused ? "Search..." : "Search (⌘K)"}
-                    className={cn(
-                      "w-[120px] sm:w-[150px] md:w-[200px] rounded-full bg-accent focus-visible:ring-primary pr-8",
-                      searchFocused && "w-[180px] sm:w-[220px] md:w-[280px]"
-                    )}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     onFocus={() => setSearchFocused(true)}
-                  />
-                  <button 
-                    type="submit" 
-                    className="absolute right-2 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                    aria-label="Search"
+                  onBlur={() => setTimeout(() => setSearchFocused(false), 200)}
+                  placeholder="Search tutorials, projects..."
+                  className={cn(
+                    "transition-all duration-300",
+                    searchFocused ? "w-full" : "w-full"
+                  )}
+                />
+                {/* Render search results */}
+                {showSearchResults && (
+                  <div 
+                    ref={searchResultsRef}
+                    className="absolute top-full mt-1 w-full rounded-md bg-card shadow-lg border z-50 max-h-[70vh] overflow-auto"
                   >
-                    <Search className="h-4 w-4" />
-                  </button>
-                </div>
-
-                {/* Category filters - shown when search is focused */}
-                {searchFocused && (
-                  <motion.div 
-                    initial={{ opacity: 0, y: -5 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="absolute top-[calc(100%+4px)] left-0 w-full flex flex-wrap gap-1 bg-background/80 backdrop-blur-sm p-1.5 rounded-lg border shadow-sm"
-                  >
-                    <Badge 
+                    {/* Search categories */}
+                    <div className="flex items-center gap-1 p-2 border-b">
+                      <Button 
+                        size="sm" 
                       variant={currentCategory === null ? "default" : "outline"}
-                      className="text-[10px] h-5 cursor-pointer hover:bg-accent/50"
+                        className="h-7 text-xs"
                       onClick={() => setCurrentCategory(null)}
                     >
                       All
-                    </Badge>
-                    <Badge 
+                      </Button>
+                      <Button 
+                        size="sm" 
                       variant={currentCategory === "tutorial" ? "default" : "outline"}
-                      className="text-[10px] h-5 cursor-pointer hover:bg-accent/50"
+                        className="h-7 text-xs"
                       onClick={() => setCurrentCategory("tutorial")}
                     >
                       Tutorials
-                    </Badge>
-                    <Badge 
+                      </Button>
+                      <Button 
+                        size="sm" 
                       variant={currentCategory === "project" ? "default" : "outline"}
-                      className="text-[10px] h-5 cursor-pointer hover:bg-accent/50"
+                        className="h-7 text-xs"
                       onClick={() => setCurrentCategory("project")}
                     >
                       Projects
-                    </Badge>
-                    <Badge 
+                      </Button>
+                      <Button 
+                        size="sm" 
                       variant={currentCategory === "blog" ? "default" : "outline"}
-                      className="text-[10px] h-5 cursor-pointer hover:bg-accent/50"
+                        className="h-7 text-xs"
                       onClick={() => setCurrentCategory("blog")}
                     >
                       Blog
-                    </Badge>
-                  </motion.div>
-                )}
-              </form>
-
-              {/* Search Results */}
-              {showSearchResults && filteredResults.length > 0 && (
-                <div 
-                  ref={searchResultsRef}
-                  className="absolute right-0 mt-10 w-full sm:min-w-[300px] bg-popover/95 backdrop-blur-md shadow-lg rounded-lg border p-2 z-50"
-                >
-                  <div className="py-1 px-3 text-xs text-muted-foreground">
-                    Found {filteredResults.length} result{filteredResults.length !== 1 ? 's' : ''}
+                      </Button>
                   </div>
                   
-                  <div className="max-h-[300px] overflow-y-auto my-1">
+                    {/* Search results */}
+                    {filteredResults.length > 0 ? (
+                      <div className="py-1">
                     {filteredResults.map((result) => (
                       <Link
                         key={result.id}
                         href={result.href}
-                        className="block px-3 py-2 hover:bg-accent rounded-md text-sm"
-                        onClick={() => {
-                          setSearchQuery("");
-                          setShowSearchResults(false);
-                          setSearchFocused(false);
-                        }}
-                      >
+                            onClick={() => setShowSearchResults(false)}
+                            className="flex items-center px-4 py-2 text-sm hover:bg-accent hover:text-accent-foreground"
+                          >
+                            <div className="mr-2">
+                              {result.category === "tutorial" && <BookOpen className="h-4 w-4" />}
+                              {result.category === "project" && <Code className="h-4 w-4" />}
+                              {result.category === "blog" && <FileText className="h-4 w-4" />}
+                            </div>
+                            <div className="flex-1">
                         <div className="font-medium">{result.title}</div>
-                        <div className="text-xs text-muted-foreground capitalize flex items-center">
-                          {result.category === "tutorial" && <BookOpen className="h-3 w-3 mr-1" />}
-                          {result.category === "project" && <Code className="h-3 w-3 mr-1" />}
-                          {result.category === "blog" && <FileText className="h-3 w-3 mr-1" />}
-                          {result.category}
+                              <div className="text-xs text-muted-foreground capitalize">{result.category}</div>
                         </div>
                       </Link>
                     ))}
                   </div>
-                  
-                  <div className="border-t mt-1 pt-1 px-3">
-                    <button
-                      onClick={() => {
-                        if (searchQuery.trim()) {
-                          router.push(`/search?q=${encodeURIComponent(searchQuery)}${currentCategory ? `&category=${currentCategory}` : ''}`);
-                          setSearchQuery("");
-                          setShowSearchResults(false);
-                          setSearchFocused(false);
-                        }
-                      }}
-                      className="text-xs flex items-center gap-1 text-primary hover:underline py-1"
-                    >
-                      See all results <ArrowRight className="h-3 w-3" />
-                    </button>
-                  </div>
+                    ) : (
+                      <div className="p-4 text-center text-sm text-muted-foreground">
+                        No results found for "{searchQuery}"
+                      </div>
+                    )}
                 </div>
               )}
-              
-              {/* No results message */}
-              {showSearchResults && searchQuery.length >= 2 && filteredResults.length === 0 && (
-                <div 
-                  ref={searchResultsRef}
-                  className="absolute right-0 mt-10 w-full sm:min-w-[300px] bg-popover/95 backdrop-blur-md shadow-lg rounded-lg border p-4 z-50 text-center"
-                >
-                  <AlertCircle className="h-5 w-5 mx-auto mb-2 text-muted-foreground" />
-                  <p className="text-sm font-medium">No results found</p>
-                  <p className="text-xs text-muted-foreground mt-1">Try a different search term or category</p>
                 </div>
-              )}
             </div>
 
-            {/* Theme Toggle */}
+            {/* Theme toggle */}
             <ThemeToggle />
 
-            {/* Notifications Dropdown */}
+            {/* Notifications dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="relative">
                   <Bell className="h-5 w-5" />
-                  {unreadCount > 0 && (
-                    <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] text-primary-foreground">
-                      {unreadCount}
-                    </span>
+                  {notifications.filter(n => !n.read).length > 0 && (
+                    <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-primary" />
                   )}
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-80">
-                <div className="flex items-center justify-between px-3 py-2">
-                  <DropdownMenuLabel>Notifications</DropdownMenuLabel>
-                  {unreadCount > 0 && (
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      onClick={markAllAsRead} 
-                      className="h-8 text-xs text-muted-foreground hover:text-foreground"
-                    >
+                <DropdownMenuLabel className="flex items-center justify-between">
+                  <span>Notifications</span>
+                  <Button variant="ghost" size="sm" className="h-auto p-0 text-xs text-muted-foreground">
                       Mark all as read
                     </Button>
-                  )}
-                </div>
+                </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 {notifications.length > 0 ? (
-                  <div className="max-h-[300px] overflow-y-auto">
+                  <>
                     {notifications.map((notification) => (
-                      <div key={notification.id} className="px-4 py-2.5 hover:bg-accent">
+                      <DropdownMenuItem key={notification.id} className="p-0 focus:bg-transparent">
                         <Link 
                           href={notification.href} 
-                          onClick={() => markAsRead(notification.id)}
-                          className="flex gap-3"
+                          className={cn(
+                            "flex items-start gap-3 w-full p-3 hover:bg-accent rounded-sm",
+                            !notification.read && "bg-slate-50 dark:bg-slate-900"
+                          )}
                         >
                           <div className={cn(
-                            "flex-shrink-0 h-8 w-8 rounded-full flex items-center justify-center",
-                            notification.read ? "bg-muted" : "bg-primary/10"
+                            "rounded-full p-1.5 mt-0.5",
+                            !notification.read ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"
                           )}>
                             {notification.icon}
                           </div>
-                          <div>
+                          <div className="grid gap-0.5">
                             <p className={cn(
-                              "text-sm font-medium",
-                              notification.read ? "text-foreground" : "text-primary"
-                            )}>
-                              {notification.title}
-                            </p>
-                            <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">
-                              {notification.message}
-                            </p>
-                            <p className="text-[10px] text-muted-foreground mt-1">
-                              {notification.time}
-                            </p>
+                              "text-sm",
+                              !notification.read && "font-medium"
+                            )}>{notification.title}</p>
+                            <p className="text-xs text-muted-foreground">{notification.message}</p>
+                            <p className="text-xs text-muted-foreground mt-1">{notification.time}</p>
                           </div>
                         </Link>
-                      </div>
+                      </DropdownMenuItem>
                     ))}
-                  </div>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem className="justify-center" asChild>
+                      <Link href="/notifications" className="w-full text-center text-sm">
+                        View all notifications
+                      </Link>
+                    </DropdownMenuItem>
+                  </>
                 ) : (
-                  <div className="px-4 py-8 text-center">
-                    <Bell className="h-5 w-5 mx-auto mb-2 text-muted-foreground" />
+                  <div className="p-4 text-center">
                     <p className="text-sm text-muted-foreground">No notifications yet</p>
                   </div>
                 )}
-                <DropdownMenuSeparator />
-                <div className="p-2">
-                  <Button asChild variant="outline" size="sm" className="w-full justify-center text-xs">
-                    <Link href="/notifications">View all notifications</Link>
-                  </Button>
-                </div>
               </DropdownMenuContent>
             </DropdownMenu>
 
-            {/* GitHub Link - Hidden on smaller screens */}
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              className="hidden sm:flex text-muted-foreground hover:text-foreground transition-colors" 
-              asChild
-            >
-              <a href="https://github.com" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
-                <Github className="h-5 w-5" />
-              </a>
-            </Button>
-
             {/* User menu */}
             <div className="flex items-center gap-2">
-              {isLoggedIn ? (
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="relative rounded-full">
-                      <UserNav />
-                    </Button>
-                  </DropdownMenuTrigger>
-                </DropdownMenu>
-              ) : (
                 <div className="flex items-center gap-2">
                   <Button variant="ghost" size="sm" asChild>
-                    <Link href="/auth/login">
-                      Log in
-                    </Link>
-                  </Button>
-                  <Button size="sm" asChild>
-                    <Link href="/auth/signup">
-                      Sign Up
+                  <Link href="/">
+                    Guest
                     </Link>
                   </Button>
                 </div>
-              )}
             </div>
 
             {/* Mobile Menu Toggle */}
@@ -647,139 +529,129 @@ export default function Navbar() {
             </Button>
           </div>
         </div>
-      </header>
+      </div>
 
-      {/* Mobile Navigation Menu */}
+      {/* Mobile menu */}
       <AnimatePresence>
         {isMenuOpen && (
           <motion.div
-            initial="closed"
-            animate="open"
-            exit="closed"
-            variants={mobileMenuVariants}
-            transition={{ type: "tween", duration: 0.25 }}
-            className="fixed inset-0 top-[57px] bg-background/95 backdrop-blur-lg md:hidden z-40"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-x-0 top-16 z-50 h-[calc(100vh-4rem)] bg-background border-t overflow-auto md:hidden"
           >
-            <div className="h-full overflow-y-auto pb-20">
-              {/* Mobile user info and login */}
+            <div className="container h-full flex flex-col divide-y">
+              {/* Mobile search */}
+              <div className="p-4">
+                <Input
+                  placeholder="Search..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full"
+                />
+              </div>
+
+              {/* Mobile user info */}
               <div className="p-4 border-b">
-                {isLoggedIn ? (
                   <div className="flex items-center gap-3">
                     <Avatar className="h-10 w-10">
-                      <AvatarImage src="/images/avatars/user.jpg" alt="User" />
-                      <AvatarFallback>U</AvatarFallback>
+                    <AvatarImage alt="Guest" />
+                    <AvatarFallback>G</AvatarFallback>
                     </Avatar>
                     <div>
-                      <p className="font-medium">User Name</p>
-                      <p className="text-sm text-muted-foreground">user@example.com</p>
-                      <div className="flex mt-2 gap-2">
-                        <Button variant="outline" size="sm" asChild className="h-8 text-xs">
-                          <Link href="/profile">Profile</Link>
-                        </Button>
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
-                          className="h-8 text-xs text-destructive border-destructive"
-                          onClick={handleLogout}
-                        >
-                          Logout
-                        </Button>
-                      </div>
+                    <p className="font-medium">Guest</p>
+                    <p className="text-sm text-muted-foreground">Not logged in</p>
                     </div>
                   </div>
-                ) : (
-                  <div className="flex flex-col gap-2">
-                    <p className="text-sm text-muted-foreground mb-1">Get the most out of EduCode</p>
-                    <div className="grid grid-cols-1 gap-2">
-                      <Button className="w-full" onClick={handleLogin}>
-                        <span>Log In with Email</span>
-                      </Button>
-                      <Button variant="outline" onClick={handlePhoneLogin}>
-                        <span>Log In with Phone</span>
-                      </Button>
-                      <Button variant="secondary" asChild>
-                        <Link href="/auth/signup">Sign Up</Link>
-                      </Button>
-                    </div>
-                  </div>
-                )}
               </div>
 
               {/* Mobile navigation links */}
-              <nav className="flex flex-col py-6 px-4 space-y-6">
+              <nav className="flex-1 overflow-auto py-4">
                 {navigationItems.map((item) => (
-                  <div key={item.name} className="space-y-2">
+                  <div key={item.name} className="mb-1">
                     <Link 
                       href={item.href}
                       className={cn(
-                        "flex items-center text-lg font-medium",
-                        pathname === item.href || pathname.startsWith(item.href + '/') 
-                          ? "text-primary" 
-                          : "text-foreground"
+                        "flex items-center justify-between px-4 py-2 text-sm font-medium",
+                        pathname === item.href 
+                          ? "bg-accent text-accent-foreground" 
+                          : "text-foreground hover:bg-accent/50 hover:text-accent-foreground"
                       )}
-                      onClick={() => setIsMenuOpen(false)}
+                      onClick={() => !item.submenu && setIsMenuOpen(false)}
                     >
-                      {item.icon && <span className="mr-2">{item.icon}</span>}
+                      <div className="flex items-center gap-2">
+                        {item.icon}
                       {item.name}
+                      </div>
+                      {item.submenu && <ChevronDown className="h-4 w-4" />}
                     </Link>
                     
+                    {/* Submenu items for mobile */}
                     {item.submenu && (
-                      <div className="pl-6 border-l border-muted space-y-3 pt-2">
+                      <div className="pl-4 mt-1 space-y-1">
                         {item.submenu.map((subItem) => (
                           <Link
                             key={subItem.name}
                             href={subItem.href}
-                            className="flex items-center text-muted-foreground hover:text-foreground"
+                            className="flex items-center gap-2 px-4 py-2 text-sm text-muted-foreground hover:bg-accent/30 hover:text-accent-foreground rounded-md"
                             onClick={() => setIsMenuOpen(false)}
                           >
-                            {subItem.icon && <span className="mr-2">{subItem.icon}</span>}
+                            {subItem.icon}
                             {subItem.name}
                           </Link>
                         ))}
                       </div>
                     )}
-                    
-                    {item.description && (
-                      <p className="text-sm text-muted-foreground">{item.description}</p>
-                    )}
                   </div>
                 ))}
               </nav>
               
-              {/* User Account section in mobile menu */}
-              <div className="mt-auto pt-4 border-t">
-                {isLoggedIn ? (
-                  <div className="px-3 mb-4">
-                    <UserNav />
-                  </div>
-                ) : (
-                  <div className="space-y-3 p-3">
-                    <Button className="w-full justify-start" variant="outline" asChild>
-                      <Link href="/auth/login" onClick={() => setIsMenuOpen(false)}>
-                        <User className="mr-2 h-4 w-4" />
-                        Sign In
+              {/* Footer links in mobile menu */}
+              <div className="p-4">
+                <div className="grid grid-cols-2 gap-2">
+                  <Button variant="outline" size="sm" asChild className="justify-start">
+                    <Link href="/help-support">
+                      <HelpCircle className="mr-2 h-4 w-4" />
+                      Help & Support
                       </Link>
                     </Button>
-                    <Button className="w-full justify-start" asChild>
-                      <Link href="/auth/signup" onClick={() => setIsMenuOpen(false)}>
-                        <UserPlus className="mr-2 h-4 w-4" />
-                        Sign Up
+                  <Button variant="outline" size="sm" asChild className="justify-start">
+                    <Link href="/privacy">
+                      <ShieldCheck className="mr-2 h-4 w-4" />
+                      Privacy Policy
                       </Link>
                     </Button>
                   </div>
-                )}
               </div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* Keyboard shortcut helper tooltip */}
-      <div className="fixed bottom-4 right-4 hidden md:block opacity-0 transition-opacity group-hover:opacity-100">
-        <div className="text-xs text-muted-foreground bg-background p-2 rounded-lg shadow-md border">
-          Press <kbd className="px-1.5 py-0.5 bg-muted rounded text-xs font-mono">⌘K</kbd> to search
-        </div>
-      </div>
-    </>
+    </header>
   );
 }
+
+// Custom search input component
+const SearchInput = React.forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTMLInputElement>>(
+  ({ className, ...props }, ref) => {
+    return (
+      <div className="relative group">
+        <SearchIcon className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+        <Input
+          className={cn(
+            "bg-background pl-8 focus-visible:ring-0 focus-visible:ring-transparent",
+            className
+          )}
+          ref={ref}
+          {...props}
+        />
+        <kbd className="pointer-events-none absolute right-2.5 top-2 hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100 group-focus-within:opacity-0 sm:flex">
+          <span className="text-xs">⌘</span>K
+        </kbd>
+      </div>
+  );
+}
+);
+
+SearchInput.displayName = "SearchInput";

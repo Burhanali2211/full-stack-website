@@ -8,7 +8,7 @@ import { Preview } from "@/components/preview";
 import { executeCode } from "@/lib/code-execution";
 import { cn } from "@/lib/utils";
 import { Play, Save } from "lucide-react";
-import { toast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 import { Editor } from "@monaco-editor/react";
 import { IDEHeader } from "@/components/ide/header";
 import type { Tab, EditorState, FileNode } from "@/types/ide";
@@ -97,10 +97,8 @@ export default function IDEPage() {
       }));
 
       if (result.status === "error" && result.error) {
-        toast({
-          title: "Execution Error",
+        toast.error("Execution Error", {
           description: result.error,
-          variant: "destructive",
         });
       }
     } catch (error) {
@@ -110,10 +108,8 @@ export default function IDEPage() {
         error: error instanceof Error ? error.message : undefined,
       }));
 
-      toast({
-        title: "Execution Error",
+      toast.error("Execution Error", {
         description: error instanceof Error ? error.message : "An unknown error occurred",
-        variant: "destructive",
       });
     }
   }, [activeTab]);
@@ -129,8 +125,7 @@ export default function IDEPage() {
           : tab
       ),
     }));
-    toast({
-      title: "File Saved",
+    toast.success("File Saved", {
       description: `${activeTab.name} has been saved successfully.`,
     });
   }, [activeTab]);

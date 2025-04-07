@@ -1,132 +1,93 @@
 "use client";
 
-import React, { useState } from 'react';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Label } from '@/components/ui/label';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { CheckCircle2, XCircle } from 'lucide-react';
-
-interface Question {
-  id: string;
-  question: string;
-  options: string[];
-  correctAnswer: number;
-  explanation: string;
-}
+import { useState } from "react";
+import { Heart, Share2, Bookmark } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 interface BlogInteractiveElementsProps {
-  code: string;
-  language: string;
-  questions: Question[];
-  tutorialId: string;
+  postId: string;
+  initialLikes?: number;
+  initialBookmarked?: boolean;
 }
 
 export default function BlogInteractiveElements({
-  code,
-  language,
-  questions,
-  tutorialId,
+  postId,
+  initialLikes = 0,
+  initialBookmarked = false,
 }: BlogInteractiveElementsProps) {
-  const [selectedAnswers, setSelectedAnswers] = useState<{ [key: string]: number }>({});
-  const [showExplanations, setShowExplanations] = useState<{ [key: string]: boolean }>({});
+  const [likes, setLikes] = useState(initialLikes);
+  const [isLiked, setIsLiked] = useState(false);
+  const [isBookmarked, setIsBookmarked] = useState(initialBookmarked);
 
-  const handleAnswerSubmit = (questionId: string) => {
-    setShowExplanations((prev) => ({
-      ...prev,
-      [questionId]: true,
-    }));
+  const handleLike = async () => {
+    try {
+      // TODO: Implement like functionality with backend
+      setLikes((prev) => (isLiked ? prev - 1 : prev + 1));
+      setIsLiked(!isLiked);
+      toast.success(isLiked ? "Post unliked" : "Post liked");
+    } catch (error) {
+      toast.error("Failed to like post");
+      console.error("Error liking post:", error);
+    }
   };
 
-  const isAnswerCorrect = (questionId: string) => {
-    const question = questions.find((q) => q.id === questionId);
-    return question && selectedAnswers[questionId] === question.correctAnswer;
+  const handleShare = async () => {
+    try {
+      await navigator.share({
+        title: document.title,
+        url: window.location.href,
+      });
+      toast.success("Post shared successfully");
+    } catch (error) {
+      // Fallback to copying URL if share API is not supported
+      await navigator.clipboard.writeText(window.location.href);
+      toast.success("Link copied to clipboard");
+    }
+  };
+
+  const handleBookmark = async () => {
+    try {
+      // TODO: Implement bookmark functionality with backend
+      setIsBookmarked(!isBookmarked);
+      toast.success(isBookmarked ? "Post removed from bookmarks" : "Post bookmarked");
+    } catch (error) {
+      toast.error("Failed to bookmark post");
+      console.error("Error bookmarking post:", error);
+    }
   };
 
   return (
-    <div className="space-y-8">
-      {/* Code Display Section */}
-      <Card className="p-4">
-        <div className="rounded-lg overflow-hidden">
-          <SyntaxHighlighter
-            language={language}
-            style={vscDarkPlus}
-            showLineNumbers
-            customStyle={{
-              margin: 0,
-              borderRadius: '0.5rem',
-              fontSize: '0.9rem',
-            }}
-          >
-            {code}
-          </SyntaxHighlighter>
-        </div>
-      </Card>
+    <div className="flex items-center gap-4 mt-8">
+      <Button
+        variant="ghost"
+        size="sm"
+        className={`flex items-center gap-2 ${isLiked ? "text-red-500" : ""}`}
+        onClick={handleLike}
+      >
+        <Heart className={`w-5 h-5 ${isLiked ? "fill-current" : ""}`} />
+        <span>{likes}</span>
+      </Button>
 
-      {/* Quiz Section */}
-      <div className="space-y-6">
-        {questions.map((question) => (
-          <Card key={question.id} className="p-6">
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold">{question.question}</h3>
-              
-              <RadioGroup
-                value={selectedAnswers[question.id]?.toString()}
-                onValueChange={(value) =>
-                  setSelectedAnswers((prev) => ({
-                    ...prev,
-                    [question.id]: parseInt(value),
-                  }))
-                }
-              >
-                <div className="space-y-2">
-                  {question.options.map((option, index) => (
-                    <div key={index} className="flex items-center space-x-2">
-                      <RadioGroupItem value={index.toString()} id={`${question.id}-${index}`} />
-                      <Label htmlFor={`${question.id}-${index}`}>{option}</Label>
-                    </div>
-                  ))}
-                </div>
-              </RadioGroup>
+      <Button
+        variant="ghost"
+        size="sm"
+        className="flex items-center gap-2"
+        onClick={handleShare}
+      >
+        <Share2 className="w-5 h-5" />
+        <span>Share</span>
+      </Button>
 
-              <div className="space-y-4">
-                <Button
-                  onClick={() => handleAnswerSubmit(question.id)}
-                  disabled={selectedAnswers[question.id] === undefined}
-                >
-                  Submit Answer
-                </Button>
-
-                {showExplanations[question.id] && (
-                  <Alert
-                    variant={isAnswerCorrect(question.id) ? "default" : "destructive"}
-                    className="mt-4"
-                  >
-                    <div className="flex items-center gap-2">
-                      {isAnswerCorrect(question.id) ? (
-                        <CheckCircle2 className="h-5 w-5" />
-                      ) : (
-                        <XCircle className="h-5 w-5" />
-                      )}
-                      <AlertTitle>
-                        {isAnswerCorrect(question.id)
-                          ? "Correct!"
-                          : "Not quite right"}
-                      </AlertTitle>
-                    </div>
-                    <AlertDescription className="mt-2">
-                      {question.explanation}
-                    </AlertDescription>
-                  </Alert>
-                )}
-              </div>
-            </div>
-          </Card>
-        ))}
-      </div>
+      <Button
+        variant="ghost"
+        size="sm"
+        className={`flex items-center gap-2 ${isBookmarked ? "text-yellow-500" : ""}`}
+        onClick={handleBookmark}
+      >
+        <Bookmark className={`w-5 h-5 ${isBookmarked ? "fill-current" : ""}`} />
+        <span>{isBookmarked ? "Bookmarked" : "Bookmark"}</span>
+      </Button>
     </div>
   );
 } 

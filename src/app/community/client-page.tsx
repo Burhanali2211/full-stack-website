@@ -80,22 +80,11 @@ export default function ClientCommunityPage() {
         >
           Connect with fellow developers, share your knowledge, and grow together in our vibrant learning community.
         </motion.p>
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="flex justify-center gap-4"
-        >
-          <Button asChild size="lg">
-            <Link href="/auth/signup">Join Community</Link>
-          </Button>
-          <Button variant="outline" size="lg" asChild>
-            <Link href="/community/discord">
-              <MessageSquareMore className="mr-2 h-5 w-5" />
-              Join Discord
-            </Link>
-          </Button>
-        </motion.div>
+        <div className="mt-8 flex justify-center">
+          <Link href="/community/join" className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90">
+            Join Community
+          </Link>
+        </div>
       </div>
 
       {/* Community Stats */}
@@ -204,6 +193,18 @@ export default function ClientCommunityPage() {
               </div>
             </motion.div>
           ))}
+        </div>
+      </div>
+
+      <div className="mt-8 text-center">
+        <h3 className="text-2xl font-bold">Join Our Community</h3>
+        <p className="mt-4 text-muted-foreground">
+          Connect with fellow developers, share your knowledge, and grow together.
+        </p>
+        <div className="mt-6">
+          <Link href="/community/join" className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90">
+            Join Now
+          </Link>
         </div>
       </div>
     </div>

@@ -1,66 +1,75 @@
 import { createClient } from '@supabase/supabase-js';
 
-// A function to safely create Supabase client that won't break builds
-const createSafeSupabaseClient = () => {
-  // In environments without proper env variables (like build time on fresh Vercel projects)
-  // provide dummy values that won't cause crashes
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder-supabase-url.supabase.co';
-  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || 'placeholder-key-for-build-only';
+if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+  throw new Error('Missing env.NEXT_PUBLIC_SUPABASE_URL');
+}
+if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
+  throw new Error('Missing env.SUPABASE_SERVICE_ROLE_KEY');
+}
 
-  // Log warnings in non-production environments
-  if (process.env.NODE_ENV !== 'production') {
-    if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
-      console.warn('Warning: Missing NEXT_PUBLIC_SUPABASE_URL environment variable');
-    }
-    if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
-      console.warn('Warning: Missing SUPABASE_SERVICE_ROLE_KEY environment variable');
-    }
-  }
+// Create a Supabase client with the service role key for admin operations
+export const supabaseAdmin = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY
+);
 
-  // Ensure the URL has proper format (starts with http/https)
-  const formattedUrl = supabaseUrl.startsWith('http') 
-    ? supabaseUrl 
-    : `https://${supabaseUrl}`;
+export interface UserProgress {
+  id: string;
+  user_id: string;
+  tutorial_id: string;
+  completed: boolean;
+  created_at: string;
+  updated_at: string;
+}
 
-  try {
-    // Create a Supabase client with the service role key for admin operations
-    return createClient(
-      formattedUrl,
-      supabaseServiceKey,
+export async function updateUserProgress(
+  userId: string,
+  tutorialId: string,
+  completed: boolean
+): Promise<UserProgress | null> {
+  const { data, error } = await supabaseAdmin
+    .from('user_progress')
+    .upsert(
       {
-        auth: {
-          autoRefreshToken: false,
-          persistSession: false,
-        },
+        user_id: userId,
+        tutorial_id: tutorialId,
+        completed,
+        updated_at: new Date().toISOString(),
+      },
+      {
+        onConflict: 'user_id,tutorial_id',
       }
-    );
-  } catch (error) {
-    // If client creation fails during build, return a stub client
-    // that won't crash builds but will throw appropriate errors in runtime
-    console.error('Error creating Supabase client:', error);
-    
-    if (process.env.NODE_ENV === 'production') {
-      throw error; // In production, we want to know about this error
-    }
-    
-    // Return a stub client for build time
-    return {
-      from: () => ({
-        select: () => ({
-          eq: () => ({
-            single: async () => ({ data: null, error: new Error('Supabase client unavailable') })
-          }),
-          insert: () => ({
-            select: () => ({
-              single: async () => ({ data: null, error: new Error('Supabase client unavailable') })
-            })
-          })
-        })
-      }),
-      // Add other method stubs as needed
-    } as any;
-  }
-};
+    )
+    .select()
+    .single();
 
-// Export the client
-export const supabaseAdmin = createSafeSupabaseClient(); 
+  if (error) {
+    console.error('Error updating user progress:', error);
+    return null;
+  }
+
+  return data;
+}
+
+export async function getUserProgress(
+  userId: string,
+  tutorialId?: string
+): Promise<UserProgress[]> {
+  let query = supabaseAdmin
+    .from('user_progress')
+    .select('*')
+    .eq('user_id', userId);
+
+  if (tutorialId) {
+    query = query.eq('tutorial_id', tutorialId);
+  }
+
+  const { data, error } = await query;
+
+  if (error) {
+    console.error('Error fetching user progress:', error);
+    return [];
+  }
+
+  return data || [];
+} 

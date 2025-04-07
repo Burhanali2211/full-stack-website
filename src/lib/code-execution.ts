@@ -160,19 +160,26 @@ function executeCSS(code: string, previewRef: React.RefObject<HTMLIFrameElement>
 
 export async function executeCode(
   code: string,
-  language: SupportedLanguage,
+  language: string,
   previewRef?: React.RefObject<HTMLIFrameElement>
 ): Promise<ExecutionResult> {
   try {
     switch (language) {
-      case "javascript":
-      case "typescript":
-        return executeJavaScript(code);
-      case "python":
-        return executePython(code);
       case "html":
       case "css":
-        return executeHtmlCss(code, language, previewRef);
+        if (!previewRef?.current) {
+          throw new Error("Preview iframe not available");
+        }
+        updatePreview(previewRef.current, code, language);
+        return { status: "success", output: "Preview updated" };
+
+      case "javascript":
+        // Execute JavaScript in a safe way
+        const result = await executeJavaScript(code);
+        return { status: "success", output: result };
+
+      case "python":
+        return executePython(code);
       case "cpp":
       case "plaintext":
         return Promise.resolve({
@@ -181,63 +188,31 @@ export async function executeCode(
           error: `Language ${language} is not supported in the playground yet.`,
         });
       default:
-        return Promise.resolve({
-          status: "error",
-          output: "",
-          error: `Language ${language} is not supported yet.`,
-        });
+        throw new Error(`Unsupported language: ${language}`);
     }
   } catch (error) {
     return {
       status: "error",
       output: "",
-      error: error instanceof Error ? error.message : undefined,
+      error: error instanceof Error ? error.message : "An unknown error occurred",
     };
   }
 }
 
-async function executeHtmlCss(
-  code: string,
-  language: "html" | "css",
-  previewRef?: React.RefObject<HTMLIFrameElement>
-): ExecutionResult {
-  if (!previewRef?.current) {
-    return {
-      status: "error",
-      output: "",
-      error: "Preview iframe is not available.",
-    };
-  }
+function updatePreview(iframe: HTMLIFrameElement, code: string, language: string) {
+  const doc = iframe.contentDocument;
+  if (!doc) return;
 
-  try {
-    const iframe = previewRef.current;
-    const doc = iframe.contentDocument;
-    if (!doc) {
-      return {
-        status: "error",
-        output: "",
-        error: "Could not access preview document.",
-      };
-    }
-
-    if (language === "html") {
-      doc.documentElement.innerHTML = code;
-    } else {
-      const style = doc.createElement("style");
-      style.textContent = code;
+  if (language === "html") {
+    doc.documentElement.innerHTML = code;
+  } else if (language === "css") {
+    let style = doc.getElementById("injected-styles");
+    if (!style) {
+      style = doc.createElement("style");
+      style.id = "injected-styles";
       doc.head.appendChild(style);
     }
-
-    return {
-      status: "success",
-      output: "Preview updated successfully.",
-    };
-  } catch (error) {
-    return {
-      status: "error",
-      output: "",
-      error: error instanceof Error ? error.message : undefined,
-    };
+    style.textContent = code;
   }
 }
 

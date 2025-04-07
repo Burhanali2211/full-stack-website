@@ -11,13 +11,4 @@ export function formatDate(date: string | Date) {
     day: "numeric",
     year: "numeric",
   });
-}
-
-export function getAvatarUrl(username: string): string {
-  // For development, return a local placeholder avatar
-  return `/avatars/placeholder.svg`;
-  
-  // When you have proper avatar handling, you can implement it here
-  // Example with proper avatar storage:
-  // return `/avatars/${username}.jpg`;
 } 

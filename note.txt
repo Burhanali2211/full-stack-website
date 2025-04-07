@@ -1,0 +1,1 @@
+An auth background image is needed at public/backgrounds/auth-background.jpg

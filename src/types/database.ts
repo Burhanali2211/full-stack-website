@@ -1,35 +1,38 @@
-export interface User {
+// Basic database types for the application
+export interface BaseEntity {
   id: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface User extends BaseEntity {
+  name: string;
   email: string;
-  name: string | null;
-  avatar_url: string | null;
-  created_at: string;
-  updated_at: string;
+  image?: string;
 }
 
-export interface Course {
-  id: string;
+export interface Tutorial extends BaseEntity {
   title: string;
-  description: string | null;
-  image_url: string | null;
-  difficulty_level: 'beginner' | 'intermediate' | 'advanced';
-  created_at: string;
-  updated_at: string;
+  description: string;
+  content: string;
+  published: boolean;
+  authorId: string;
+  category: string;
+  tags: string[];
 }
 
-export interface UserProgress {
-  id: string;
-  user_id: string;
-  course_id: string;
-  progress_percentage: number;
-  last_accessed_at: string;
-  completed_at: string | null;
-  created_at: string;
-  updated_at: string;
+export interface Comment extends BaseEntity {
+  content: string;
+  authorId: string;
+  tutorialId: string;
 }
 
-export interface DashboardData {
-  user: User;
-  courses: Course[];
-  progress: UserProgress[];
-} 
+export interface Like extends BaseEntity {
+  userId: string;
+  tutorialId: string;
+}
+
+export interface Bookmark extends BaseEntity {
+  userId: string;
+  tutorialId: string;
+}

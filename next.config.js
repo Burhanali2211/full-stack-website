@@ -19,17 +19,11 @@ const nextConfig = {
   // Enable optimizations for faster builds
   experimental: {
     optimizeCss: true,
-    optimizePackageImports: [
-      'lucide-react', 
-      '@radix-ui/react-icons',
-      'framer-motion'
-    ],
-    esmExternals: 'loose',
+    esmExternals: true,
   },
   
   // Configure image domains for external images
   images: {
-    domains: ['images.unsplash.com', 'via.placeholder.com', 'avatars.githubusercontent.com'],
     remotePatterns: [
       {
         protocol: 'https',
@@ -39,9 +33,24 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'images.unsplash.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'avatars.githubusercontent.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'via.placeholder.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'api.dicebear.com',
+      },
     ],
     // Optimize image formats
     formats: ['image/avif', 'image/webp'],
+    dangerouslyAllowSVG: true,
+    contentDispositionType: 'attachment',
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
   
   typescript: {

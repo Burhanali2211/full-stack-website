@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Users, Sparkles, Trophy, ArrowRight, Filter } from "lucide-react";
-import TutorialCard, { Tutorial } from "./TutorialCard";
+import { TutorialCard, type Tutorial } from "./TutorialCard";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useInView } from "react-intersection-observer";
