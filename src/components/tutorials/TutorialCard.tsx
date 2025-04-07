@@ -88,8 +88,8 @@ export function TutorialCard({ tutorial, index, onSave, onShare, onLike, isSaved
     intermediate: "bg-blue-500/10 text-blue-700 dark:text-blue-400",
     advanced: "bg-purple-500/10 text-purple-700 dark:text-purple-400",
   };
-
-  return (
+    
+    return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -99,13 +99,13 @@ export function TutorialCard({ tutorial, index, onSave, onShare, onLike, isSaved
       <Link href={`/tutorials/${tutorial.slug}`}>
         <Card className="h-full overflow-hidden transition-all hover:shadow-lg">
           <div className="relative aspect-video">
-            <Image
+                    <Image 
               src={tutorial.image}
               alt={tutorial.title}
-              fill
+                      fill
               className="object-cover transition-transform group-hover:scale-105"
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            />
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    />
             {tutorial.videoId && (
               <Button
                 variant="ghost"
@@ -117,7 +117,7 @@ export function TutorialCard({ tutorial, index, onSave, onShare, onLike, isSaved
               </Button>
             )}
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-          </div>
+                  </div>
           <div className="p-4 space-y-4">
             <div className="flex items-center gap-2">
               <Badge variant="secondary">{tutorial.category}</Badge>
@@ -125,7 +125,7 @@ export function TutorialCard({ tutorial, index, onSave, onShare, onLike, isSaved
                 {tutorial.level}
               </Badge>
             </div>
-            <div>
+                  <div>
               <h3 className="font-semibold text-lg group-hover:text-primary transition-colors">
                 {tutorial.title}
               </h3>
@@ -154,7 +154,7 @@ export function TutorialCard({ tutorial, index, onSave, onShare, onLike, isSaved
                   <span className="font-medium">{tutorial.progress}%</span>
                 </div>
                 <Progress value={tutorial.progress} className="h-1.5" />
-              </div>
+                </div>
             )}
             <div className="flex items-center justify-between pt-4 border-t">
               <div className="flex flex-col">
@@ -218,7 +218,7 @@ export function TutorialCard({ tutorial, index, onSave, onShare, onLike, isSaved
           >
             <div className="flex justify-between items-center p-4 border-b">
               <h2 className="text-xl font-semibold">{tutorial.title}</h2>
-              <Button
+              <Button 
                 variant="ghost"
                 size="icon"
                 onClick={() => setIsPreviewOpen(false)}
@@ -238,8 +238,8 @@ export function TutorialCard({ tutorial, index, onSave, onShare, onLike, isSaved
               <p className="text-muted-foreground">{tutorial.description}</p>
             </div>
           </div>
-        </div>
-      )}
-    </motion.div>
+          </div>
+        )}
+      </motion.div>
   );
 }

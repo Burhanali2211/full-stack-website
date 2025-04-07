@@ -11,6 +11,33 @@ A modern platform for learning programming through hands-on projects and interac
 - Code reviews and mentorship
 - Progress tracking and achievements
 
+## Getting Started
+
+1. Clone the repository
+2. Install dependencies: `npm install`
+3. Set up environment variables (see `.env.example`)
+4. Run development server: `npm run dev`
+
+## Deployment
+
+This project uses GitHub Actions for CI/CD to automatically deploy to Vercel.
+
+- All pushes to the `main` branch trigger an automatic deployment
+- See `.github/workflows/deploy.yml` for the workflow configuration
+- Check `docs/CICD-SETUP.md` for detailed setup instructions
+
+### Manual Deployment
+
+You can also deploy manually:
+
+```bash
+# Install Vercel CLI
+npm install -g vercel
+
+# Deploy to production
+vercel deploy --prod
+```
+
 ## Recent Updates
 
 ### Project Page Enhancement
@@ -30,13 +57,6 @@ A modern platform for learning programming through hands-on projects and interac
 - Dark mode support
 - Improved navigation
 - Better mobile experience
-
-## Getting Started
-
-1. Clone the repository
-2. Install dependencies: `npm install`
-3. Set up environment variables
-4. Run development server: `npm run dev`
 
 ## Contributing
 
