@@ -3,10 +3,7 @@
   "buildCommand": "npm run build",
   "devCommand": "npm run dev",
   "installCommand": "npm install",
-  "framework": {
-    "name": "nextjs",
-    "version": "latest"
-  },
+  "framework": "nextjs",
   "regions": ["iad1"],
   "ignoreCommand": "echo \"Ignoring build errors\"",
   "github": {
