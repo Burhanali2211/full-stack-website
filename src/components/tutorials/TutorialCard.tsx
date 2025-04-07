@@ -84,12 +84,12 @@ export function TutorialCard({ tutorial, index, onSave, onShare, onLike, isSaved
   }, [isPreviewOpen]);
 
   const levelStyles = {
-    beginner: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400",
-    intermediate: "bg-blue-500/10 text-blue-700 dark:text-blue-400",
-    advanced: "bg-purple-500/10 text-purple-700 dark:text-purple-400",
+    beginner: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/20",
+    intermediate: "bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/20",
+    advanced: "bg-purple-500/10 text-purple-700 dark:text-purple-400 border-purple-500/20",
   };
     
-    return (
+  return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -97,64 +97,69 @@ export function TutorialCard({ tutorial, index, onSave, onShare, onLike, isSaved
       className="group relative h-full"
     >
       <Link href={`/tutorials/${tutorial.slug}`}>
-        <Card className="h-full overflow-hidden transition-all hover:shadow-lg">
+        <Card className="h-full overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-primary/5 dark:hover:shadow-primary/10">
           <div className="relative aspect-video">
-                    <Image 
+            <Image 
               src={tutorial.image}
               alt={tutorial.title}
-                      fill
-              className="object-cover transition-transform group-hover:scale-105"
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    />
+              fill
+              className="object-cover transition-transform duration-300 group-hover:scale-105"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            />
             {tutorial.videoId && (
               <Button
                 variant="ghost"
                 size="icon"
-                className="absolute inset-0 m-auto bg-black/50 hover:bg-black/70 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                className="absolute inset-0 m-auto bg-black/50 hover:bg-black/70 text-white rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 scale-75 group-hover:scale-100"
                 onClick={togglePreview}
               >
                 <Play className="h-6 w-6" />
               </Button>
             )}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </div>
-          <div className="p-4 space-y-4">
-            <div className="flex items-center gap-2">
-              <Badge variant="secondary">{tutorial.category}</Badge>
-              <Badge className={cn("capitalize", levelStyles[tutorial.level])}>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          </div>
+          <div className="p-5 space-y-4">
+            <div className="flex items-center gap-2 flex-wrap">
+              <Badge variant="outline" className="bg-primary/5 hover:bg-primary/10">{tutorial.category}</Badge>
+              <Badge variant="outline" className={cn("capitalize border", levelStyles[tutorial.level])}>
                 {tutorial.level}
               </Badge>
+              {tutorial.tags.slice(0, 2).map((tag) => (
+                <Badge key={tag} variant="secondary" className="text-xs">
+                  {tag}
+                </Badge>
+              ))}
             </div>
-                  <div>
-              <h3 className="font-semibold text-lg group-hover:text-primary transition-colors">
+            <div>
+              <h3 className="font-semibold text-lg group-hover:text-primary transition-colors duration-300 line-clamp-2">
                 {tutorial.title}
               </h3>
-              <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
+              <p className="text-sm text-muted-foreground mt-2 line-clamp-2">
                 {tutorial.description}
               </p>
             </div>
             <div className="flex items-center gap-4 text-sm text-muted-foreground">
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-1.5">
                 <Clock className="h-4 w-4" />
                 <span>{tutorial.duration}</span>
               </div>
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-1.5">
                 <Star className="h-4 w-4 text-yellow-500" />
                 <span>{tutorial.rating.toFixed(1)}</span>
               </div>
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-1.5">
                 <MessageSquare className="h-4 w-4" />
                 <span>{tutorial.comments}</span>
               </div>
             </div>
             {tutorial.progress !== undefined && (
-              <div>
-                <div className="flex justify-between text-sm mb-1">
+              <div className="pt-1">
+                <div className="flex justify-between text-sm mb-1.5">
                   <span className="text-muted-foreground">Progress</span>
                   <span className="font-medium">{tutorial.progress}%</span>
                 </div>
                 <Progress value={tutorial.progress} className="h-1.5" />
-                </div>
+              </div>
             )}
             <div className="flex items-center justify-between pt-4 border-t">
               <div className="flex flex-col">
@@ -163,7 +168,7 @@ export function TutorialCard({ tutorial, index, onSave, onShare, onLike, isSaved
                   {tutorial.author.title}
                 </span>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1">
                 <Button
                   variant="ghost"
                   size="icon"
@@ -172,7 +177,7 @@ export function TutorialCard({ tutorial, index, onSave, onShare, onLike, isSaved
                     onLike(tutorial.id);
                   }}
                   className={cn(
-                    "hover:text-primary",
+                    "hover:text-primary transition-colors duration-300",
                     isLiked && "text-primary"
                   )}
                 >
@@ -186,7 +191,7 @@ export function TutorialCard({ tutorial, index, onSave, onShare, onLike, isSaved
                     onSave(tutorial.id);
                   }}
                   className={cn(
-                    "hover:text-primary",
+                    "hover:text-primary transition-colors duration-300",
                     isSaved && "text-primary"
                   )}
                 >
@@ -199,7 +204,7 @@ export function TutorialCard({ tutorial, index, onSave, onShare, onLike, isSaved
                     e.preventDefault();
                     onShare(tutorial.id);
                   }}
-                  className="hover:text-primary"
+                  className="hover:text-primary transition-colors duration-300"
                 >
                   <Share className="h-4 w-4" />
                 </Button>
